@@ -8,6 +8,12 @@
   version = "v1.1.0"
 
 [[projects]]
+  name = "github.com/pkg/errors"
+  packages = ["."]
+  revision = "645ef00459ed84a119197bfb8d8205042c6df63d"
+  version = "v0.8.0"
+
+[[projects]]
   name = "github.com/pmezard/go-difflib"
   packages = ["difflib"]
   revision = "792786c7400a136282c1664665ae0a8db921c6c2"
@@ -20,26 +26,45 @@
   version = "v1.2.0"
 
 [[projects]]
-  branch = "single-gateway"
-  name = "github.com/thingful/big-iot-gateway-test"
-  packages = ["utils"]
-  revision = "3f379cf4d813b4582976a9f6820da34d0bb6d29b"
-
-[[projects]]
   name = "github.com/thingful/bigiot"
   packages = ["."]
-  revision = "353920c904af7c05448f5a7291b4dc137fe4bdc5"
-  version = "v0.0.2"
+  revision = "250f538dca5a0c878961265e93fc4905c2d76548"
+  version = "v0.0.3"
 
 [[projects]]
   name = "goji.io"
-  packages = [".","internal","pat","pattern"]
+  packages = [
+    ".",
+    "internal",
+    "pat",
+    "pattern"
+  ]
   revision = "0d89ff54b2c18c9c4ba530e32496aef902d3c6cd"
   version = "v2.0"
+
+[[projects]]
+  branch = "master"
+  name = "golang.org/x/crypto"
+  packages = [
+    "ed25519",
+    "ed25519/internal/edwards25519"
+  ]
+  revision = "5f55bce93ad2c89f411e009659bb1fd83da36e7b"
+
+[[projects]]
+  name = "gopkg.in/square/go-jose.v2"
+  packages = [
+    ".",
+    "cipher",
+    "json",
+    "jwt"
+  ]
+  revision = "f8f38de21b4dcd69d0413faf231983f5fd6634b1"
+  version = "v2.1.3"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "5c3e72c8479dd778e06701b24975f54522dcfe146d15f4286d9a475d9806f0f8"
+  inputs-digest = "ab7415dd20e33866e981fbf52b8c127879c665c58961b88621e4b239533fa09b"
   solver-name = "gps-cdcl"
   solver-version = 1

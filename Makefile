@@ -17,7 +17,7 @@ default: help
 
 .PHONY: install
 install:
-	dep ensure
+	dep ensure -v
 
 .PHONY: build
 build:

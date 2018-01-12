@@ -3,7 +3,7 @@ version: "3"
 services:
   big_iot_gw:
     volumes:
-      - .:/go/src/github.com/thingful/big-iot-gateway-test
+      - .:/go/src/github.com/thingful/big-iot-gateway
     build:
       context: .
     image: thingful/big-iot-gateway

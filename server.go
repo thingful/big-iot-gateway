@@ -17,7 +17,7 @@ import (
 	goji "goji.io"
 	"goji.io/pat"
 
-	"github.com/thingful/big-iot-gateway-test/utils"
+	"github.com/thingful/big-iot-gateway/utils"
 )
 
 const (
