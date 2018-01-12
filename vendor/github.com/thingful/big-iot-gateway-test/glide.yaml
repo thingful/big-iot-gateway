@@ -1,0 +1,5 @@
+package: github.com/thingful/big-iot-gateway-test
+import:
+- package: github.com/thingful/bigiot
+- package: github.com/davecgh/go-spew
+- package: goji.io
