@@ -22,15 +22,15 @@ import (
 
 const (
 	marketplaceURI           = "https://market.big-iot.org"
-	providerID               = "thingful_test_org-thingful_test_provider"
-	providerSecret           = "3cKoYLd-RdyaB5EZZov7Sg=="
+	providerID               = "Thingful_SM-TestProvider"
+	providerSecret           = "CF72ABfRTqy1FQS1zBaevw=="
 	offeringActiveLengthSec  = 300
 	offeringCheckIntervalSec = 10
 	offeringEndpoint         = "https://ec2-35-157-149-71.eu-central-1.compute.amazonaws.com:8888/bigiot/access/airqualitydata"
 	pipeAccessToken          = "f94a62e6-455f-4a5e-8f7a-36f000cace4d"
 
 	ngrokForward   = true
-	forwardAddress = "http://8d43fe3f.ngrok.io"
+	forwardAddress = "http://7e9816f9.ngrok.io"
 	defaultHost    = "localhost"
 	defaultPort    = "8080"
 )
@@ -111,12 +111,23 @@ func main() {
 	}
 	fmt.Println("M2 register offering completed")
 
+	auth, err := NewAuthMiddleware(providerSecret)
+	if err != nil {
+		panic(err) // TODO: handle errors properly
+	}
+
 	mux := goji.NewMux()
 	mux.HandleFunc(pat.Get("/offering/:offeringID"), access)
+	mux.HandleFunc(pat.Get("/pulse"), pulse)
+	mux.Use(auth.Handler)
 
 	log.Printf("Starting server listening on :%s", port)
 	log.Fatal(http.ListenAndServe(":"+port, mux))
 
+}
+
+func pulse(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, "ok")
 }
 
 func access(w http.ResponseWriter, r *http.Request) {
