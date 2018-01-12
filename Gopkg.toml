@@ -26,12 +26,8 @@
   version = "1.2.0"
 
 [[constraint]]
-  branch = "single-gateway"
-  name = "github.com/thingful/big-iot-gateway-test"
-
-[[constraint]]
   name = "github.com/thingful/bigiot"
-  version = "0.0.2"
+  version = "0.0.3"
 
 [[constraint]]
   name = "goji.io"

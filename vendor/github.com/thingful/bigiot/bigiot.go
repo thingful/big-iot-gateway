@@ -23,6 +23,8 @@ import (
 	"net/http"
 	"net/url"
 	"time"
+
+	"github.com/pkg/errors"
 )
 
 const (
@@ -32,6 +34,10 @@ const (
 	// DefaultTimeout is the default timeout in seconds to set on on requests to
 	// the marketplace
 	DefaultTimeout = 10
+
+	// DefaultActivationDuration is the default duration a resource will be
+	// activated for. Currently this is set for 10 minutes.
+	DefaultActivationDuration = 10 * time.Minute
 )
 
 // base is our base BIGIoT client object. It contains the runtime state of our
@@ -47,6 +53,7 @@ type base struct {
 	baseURL     *url.URL
 	accessToken string
 	graphqlURL  string
+	clock       Clock
 }
 
 func newBase(id, secret string, options ...Option) (*base, error) {
@@ -65,6 +72,7 @@ func newBase(id, secret string, options ...Option) (*base, error) {
 		userAgent:  fmt.Sprintf("bigiot/%s (https://github.com/thingful/bigiot)", Version),
 		baseURL:    u,
 		httpClient: httpClient,
+		clock:      &realClock{},
 	}
 
 	var err error
@@ -73,7 +81,7 @@ func newBase(id, secret string, options ...Option) (*base, error) {
 	for _, opt := range options {
 		err = opt(b)
 		if err != nil {
-			return nil, err
+			return nil, errors.Wrap(err, "initializing base failed")
 		}
 	}
 
@@ -116,14 +124,14 @@ func (b *base) Authenticate() (err error) {
 
 	req, err := http.NewRequest(http.MethodGet, authURL.String(), nil)
 	if err != nil {
-		return err
+		return errors.Wrap(err, "error creating authentication request")
 	}
 
 	req.Header.Set(acceptHeader, textPlain)
 
 	resp, err := b.httpClient.Do(req)
 	if err != nil {
-		return err
+		return errors.Wrap(err, "error making authentication request")
 	}
 
 	defer func() {
@@ -138,7 +146,7 @@ func (b *base) Authenticate() (err error) {
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		return err
+		return errors.Wrap(err, "error reading authentication response")
 	}
 
 	b.accessToken = string(body)
@@ -153,17 +161,17 @@ func (b *base) Authenticate() (err error) {
 // returned data.
 func (b *base) query(ctx context.Context, s serializable) (_ []byte, err error) {
 	q := &query{
-		Query: s.Serialize(),
+		Query: s.Serialize(b.clock),
 	}
 
 	bt, err := json.Marshal(q)
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "error marshalling request")
 	}
 
 	req, err := http.NewRequest(http.MethodPost, b.graphqlURL, bytes.NewBuffer(bt))
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "error creating request")
 	}
 
 	req.Header.Set(contentTypeHeader, applicationJSON)
@@ -172,7 +180,7 @@ func (b *base) query(ctx context.Context, s serializable) (_ []byte, err error) 
 
 	resp, err := b.httpClient.Do(req)
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "error making request to marketplace")
 	}
 
 	defer func() {
@@ -206,7 +214,7 @@ func WithMarketplace(marketplaceURL string) Option {
 	return func(b *base) error {
 		u, err := url.Parse(marketplaceURL)
 		if err != nil {
-			return err
+			return errors.Wrap(err, "error parsing marketplace url")
 		}
 
 		b.baseURL = u
@@ -244,6 +252,16 @@ func WithUserAgent(userAgent string) Option {
 func WithHTTPClient(client *http.Client) Option {
 	return func(b *base) error {
 		b.httpClient = client
+
+		return nil
+	}
+}
+
+// WithClock allows a caller to specify a custom Clock implementaton. Typically
+// this will only be used within tests to mock out calls to time.Now().
+func WithClock(clock Clock) Option {
+	return func(b *base) error {
+		b.clock = clock
 
 		return nil
 	}
