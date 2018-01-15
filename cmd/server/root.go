@@ -6,6 +6,7 @@ import (
 	"os/signal"
 
 	"github.com/spf13/cobra"
+	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
 )
 
@@ -43,14 +44,24 @@ func init() {
 	RootCmd.PersistentFlags().String("offeringEndpoint", "", "Offering End Point")
 	RootCmd.PersistentFlags().String("pipeAccessToken", "", "Pipes access token")
 
-	viper.BindPFlag("marketPlaceURI", RootCmd.PersistentFlags().Lookup("marketPlaceURI"))
-	viper.BindPFlag("providerID", RootCmd.PersistentFlags().Lookup("providerID"))
-	viper.BindPFlag("providerSecret", RootCmd.PersistentFlags().Lookup("providerSecret"))
-	viper.BindPFlag("offeringActiveLengthSec", RootCmd.PersistentFlags().Lookup("offeringActiveLengthSec"))
-	viper.BindPFlag("offeringCheckIntervalSec", RootCmd.PersistentFlags().Lookup("offeringCheckIntervalSec"))
-	viper.BindPFlag("offeringEndpoint", RootCmd.PersistentFlags().Lookup("offeringEndpoint"))
-	viper.BindPFlag("pipeAccessToken", RootCmd.PersistentFlags().Lookup("pipeAccessToken"))
-
+	BindViper(RootCmd.Flags(),
+		"marketPlaceURI",
+		"providerID",
+		"providerSecret",
+		"offeringActiveLengthSec",
+		"offeringCheckIntervalSec",
+		"offeringEndpoint",
+		"pipeAccessToken",
+	)
+	/*
+		viper.BindPFlag("marketPlaceURI", RootCmd.PersistentFlags().Lookup("marketPlaceURI"))
+		viper.BindPFlag("providerID", RootCmd.PersistentFlags().Lookup("providerID"))
+		viper.BindPFlag("providerSecret", RootCmd.PersistentFlags().Lookup("providerSecret"))
+		viper.BindPFlag("offeringActiveLengthSec", RootCmd.PersistentFlags().Lookup("offeringActiveLengthSec"))
+		viper.BindPFlag("offeringCheckIntervalSec", RootCmd.PersistentFlags().Lookup("offeringCheckIntervalSec"))
+		viper.BindPFlag("offeringEndpoint", RootCmd.PersistentFlags().Lookup("offeringEndpoint"))
+		viper.BindPFlag("pipeAccessToken", RootCmd.PersistentFlags().Lookup("pipeAccessToken"))
+	*/
 }
 
 // initConfig reads in config file and ENV variables if set.
@@ -69,5 +80,14 @@ func initConfig() {
 	// If a config file is found, read it in.
 	if err := viper.ReadInConfig(); err == nil {
 		fmt.Println("Using config file:", viper.ConfigFileUsed())
+	}
+}
+
+func BindViper(flags *pflag.FlagSet, names ...string) {
+	for _, name := range names {
+		err := viper.BindPFlag(name, flags.Lookup(name))
+		if err != nil {
+			panic(err)
+		}
 	}
 }
