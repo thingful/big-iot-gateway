@@ -44,7 +44,7 @@ func init() {
 	RootCmd.PersistentFlags().String("offeringEndpoint", "", "Offering End Point")
 	RootCmd.PersistentFlags().String("pipeAccessToken", "", "Pipes access token")
 
-	BindViper(RootCmd.Flags(),
+	bindViper(RootCmd.Flags(),
 		"marketPlaceURI",
 		"providerID",
 		"providerSecret",
@@ -83,7 +83,7 @@ func initConfig() {
 	}
 }
 
-func BindViper(flags *pflag.FlagSet, names ...string) {
+func bindViper(flags *pflag.FlagSet, names ...string) {
 	for _, name := range names {
 		err := viper.BindPFlag(name, flags.Lookup(name))
 		if err != nil {
