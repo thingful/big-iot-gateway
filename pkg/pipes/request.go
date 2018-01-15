@@ -5,7 +5,7 @@ import (
 	"net/http"
 )
 
-func MakePipeRequest(url string, token string) ([]byte, error) {
+func MakeRequest(url string, token string) ([]byte, error) {
 
 	client := &http.Client{}
 
