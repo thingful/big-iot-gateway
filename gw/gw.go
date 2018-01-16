@@ -10,7 +10,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/spf13/viper"
 	"github.com/thingful/big-iot-gateway-test/utils"
 	"github.com/thingful/bigiot"
 	goji "goji.io"
@@ -61,21 +60,25 @@ var (
 	}
 )
 
+// Start starts gw service
 func Start(config Config) error {
 	addCommonOutputToOfferings(offerings)
 
-	provider, err := authenticateProvider()
+	provider, err := authenticateProvider(config.ProviderID, config.ProviderSecret, config.MarketPlaceURI)
 	if err != nil {
 		return err
 	}
 	for _, o := range offerings {
-		off := makeOffering(o, "localhost", "8080")
+		off := makeOffering(o, "localhost", "8080", config.OfferingActiveLengthSec)
 		_, err = provider.RegisterOffering(context.Background(), off)
 		if err != nil {
-			return err
+			log.Println("Error Registering Offering:", err)
 		}
-		// needed check error here!
-		go offeringCheck(o, provider, "localhost", "8080")
+
+		go func() {
+			err := offeringCheck(o, provider, "localhost", "8080", config.PipeAccessToken, config.OfferingCheckIntervalSec)
+			log.Println("Error checking Offering:", err)
+		}()
 	}
 	mux := goji.NewMux()
 
@@ -118,11 +121,11 @@ func addCommonOutputToOfferings(o []utils.OfferingConfig) {
 
 }
 
-func authenticateProvider() (*bigiot.Provider, error) {
+func authenticateProvider(id, secret, uri string) (*bigiot.Provider, error) {
 	provider, err := bigiot.NewProvider(
-		viper.GetString("providerID"),
-		viper.GetString("providerSecret"),
-		bigiot.WithMarketplace(viper.GetString("marketPlaceURI")),
+		id,
+		secret,
+		bigiot.WithMarketplace(uri),
 	)
 	if err != nil {
 		return nil, err
@@ -136,7 +139,7 @@ func authenticateProvider() (*bigiot.Provider, error) {
 	return provider, err
 }
 
-func makeOffering(o utils.OfferingConfig, host string, port string) *bigiot.OfferingDescription {
+func makeOffering(o utils.OfferingConfig, host string, port string, offeringActiveLengthSec time.Duration) *bigiot.OfferingDescription {
 	addOfferingInput := &bigiot.OfferingDescription{
 		LocalID: o.ID,
 		Name:    o.Name,
@@ -175,7 +178,7 @@ func makeOffering(o utils.OfferingConfig, host string, port string) *bigiot.Offe
 		},
 		Activation: bigiot.Activation{
 			Status:         true,
-			ExpirationTime: time.Now().Add(viper.GetDuration("offeringActiveLengthSec") * time.Second), // need to set this
+			ExpirationTime: time.Now().Add(offeringActiveLengthSec * time.Second), // need to set this
 		},
 	}
 	for _, output := range o.Outputs {
@@ -195,11 +198,17 @@ func makeOffering(o utils.OfferingConfig, host string, port string) *bigiot.Offe
 }
 
 // the first register could also happen here
-func offeringCheck(offering utils.OfferingConfig, provider *bigiot.Provider, host string, port string) error {
+func offeringCheck(
+	offering utils.OfferingConfig,
+	provider *bigiot.Provider,
+	host string,
+	port string,
+	pipeAccessToken string,
+	offeringCheckIntervalSec time.Duration) error {
 
-	for range time.Tick(time.Second * viper.GetDuration("offeringCheckIntervalSec")) {
+	for range time.Tick(time.Second * offeringCheckIntervalSec) {
 		fmt.Printf("now we check for offering:%s\n", offering.Name)
-		bytes, err := utils.MakePipeRequest(offering.PipeURL+"?limit=1", viper.GetString("pipeAccessToken"))
+		bytes, err := utils.MakePipeRequest(offering.PipeURL+"?limit=1", pipeAccessToken)
 		if err != nil {
 			return err
 		}
@@ -216,7 +225,7 @@ func offeringCheck(offering utils.OfferingConfig, provider *bigiot.Provider, hos
 
 			fmt.Printf("pipe for offering: %s return 1 result, re-registering offering:", offering.Name)
 
-			off := makeOffering(offering, host, port)
+			off := makeOffering(offering, host, port, offeringCheckIntervalSec)
 			// spew.Dump(off)
 			_, err = provider.RegisterOffering(context.Background(), off)
 			if err != nil {
