@@ -32,3 +32,7 @@
 [[constraint]]
   name = "goji.io"
   version = "2.0.0"
+
+[[constraint]]
+  name = "github.com/go-kit/kit"
+  version = "0.6.0"

@@ -1,13 +1,14 @@
 package main
 
 import (
-	"fmt"
 	"os"
 	"os/signal"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
+
+	"github.com/thingful/big-iot-gateway/pkg/log"
 )
 
 var (
@@ -27,7 +28,7 @@ var RootCmd = &cobra.Command{
 
 func Execute() {
 	if err := RootCmd.Execute(); err != nil {
-		fmt.Println(err)
+		log.Log("msg", err)
 		os.Exit(1)
 	}
 }
@@ -43,25 +44,32 @@ func init() {
 	RootCmd.PersistentFlags().Int("offeringCheckIntervalSec", 10, "Offering Check Interval in secs")
 	RootCmd.PersistentFlags().String("offeringEndpoint", "", "Offering End Point")
 	RootCmd.PersistentFlags().String("pipeAccessToken", "", "Pipes access token")
-
-	bindViper(RootCmd.Flags(),
-		"marketPlaceURI",
-		"providerID",
-		"providerSecret",
-		"offeringActiveLengthSec",
-		"offeringCheckIntervalSec",
-		"offeringEndpoint",
-		"pipeAccessToken",
-	)
+	RootCmd.PersistentFlags().Int("HTTPPort", 8080, "HTTP Port where will be running the service")
+	RootCmd.PersistentFlags().String("HTTPHost", "localhost", "HTTP Hostname where will be running the service")
+	RootCmd.PersistentFlags().Bool("debug", false, "enable debug")
 	/*
-		viper.BindPFlag("marketPlaceURI", RootCmd.PersistentFlags().Lookup("marketPlaceURI"))
-		viper.BindPFlag("providerID", RootCmd.PersistentFlags().Lookup("providerID"))
-		viper.BindPFlag("providerSecret", RootCmd.PersistentFlags().Lookup("providerSecret"))
-		viper.BindPFlag("offeringActiveLengthSec", RootCmd.PersistentFlags().Lookup("offeringActiveLengthSec"))
-		viper.BindPFlag("offeringCheckIntervalSec", RootCmd.PersistentFlags().Lookup("offeringCheckIntervalSec"))
-		viper.BindPFlag("offeringEndpoint", RootCmd.PersistentFlags().Lookup("offeringEndpoint"))
-		viper.BindPFlag("pipeAccessToken", RootCmd.PersistentFlags().Lookup("pipeAccessToken"))
+		bindViper(RootCmd.Flags(),
+			"marketPlaceURI",
+			"providerID",
+			"providerSecret",
+			"offeringActiveLengthSec",
+			"offeringCheckIntervalSec",
+			"offeringEndpoint",
+			"pipeAccessToken",
+		)
 	*/
+
+	viper.BindPFlag("marketPlaceURI", RootCmd.PersistentFlags().Lookup("marketPlaceURI"))
+	viper.BindPFlag("providerID", RootCmd.PersistentFlags().Lookup("providerID"))
+	viper.BindPFlag("providerSecret", RootCmd.PersistentFlags().Lookup("providerSecret"))
+	viper.BindPFlag("offeringActiveLengthSec", RootCmd.PersistentFlags().Lookup("offeringActiveLengthSec"))
+	viper.BindPFlag("offeringCheckIntervalSec", RootCmd.PersistentFlags().Lookup("offeringCheckIntervalSec"))
+	viper.BindPFlag("offeringEndpoint", RootCmd.PersistentFlags().Lookup("offeringEndpoint"))
+	viper.BindPFlag("pipeAccessToken", RootCmd.PersistentFlags().Lookup("pipeAccessToken"))
+	viper.BindPFlag("HTTPPort", RootCmd.PersistentFlags().Lookup("HTTPPort"))
+	viper.BindPFlag("HTTPHost", RootCmd.PersistentFlags().Lookup("HTTPHost"))
+	viper.BindPFlag("debug", RootCmd.PersistentFlags().Lookup("debug"))
+
 }
 
 // initConfig reads in config file and ENV variables if set.
@@ -79,7 +87,7 @@ func initConfig() {
 
 	// If a config file is found, read it in.
 	if err := viper.ReadInConfig(); err == nil {
-		fmt.Println("Using config file:", viper.ConfigFileUsed())
+		log.Log("Using config file:", viper.ConfigFileUsed())
 	}
 }
 
@@ -87,7 +95,7 @@ func bindViper(flags *pflag.FlagSet, names ...string) {
 	for _, name := range names {
 		err := viper.BindPFlag(name, flags.Lookup(name))
 		if err != nil {
-			panic(err)
+			panic("Error trying to bind:" + name + " " + err.Error())
 		}
 	}
 }

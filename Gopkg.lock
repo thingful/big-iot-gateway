@@ -14,6 +14,24 @@
   version = "v1.4.7"
 
 [[projects]]
+  name = "github.com/go-kit/kit"
+  packages = ["log"]
+  revision = "4dc7be5d2d12881735283bcab7352178e190fc71"
+  version = "v0.6.0"
+
+[[projects]]
+  name = "github.com/go-logfmt/logfmt"
+  packages = ["."]
+  revision = "390ab7935ee28ec6b286364bba9b4dd6410cb3d5"
+  version = "v0.3.0"
+
+[[projects]]
+  name = "github.com/go-stack/stack"
+  packages = ["."]
+  revision = "259ab82a6cad3992b4e21ff5cac294ccb06474bc"
+  version = "v1.7.0"
+
+[[projects]]
   branch = "master"
   name = "github.com/hashicorp/hcl"
   packages = [".","hcl/ast","hcl/parser","hcl/scanner","hcl/strconv","hcl/token","json/parser","json/scanner","json/token"]
@@ -24,6 +42,12 @@
   packages = ["."]
   revision = "76626ae9c91c4f2a10f34cad8ce83ea42c93bb75"
   version = "v1.0"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/kr/logfmt"
+  packages = ["."]
+  revision = "b84e30acd515aadc4b783ad4ff83aff3299bdfe0"
 
 [[projects]]
   name = "github.com/magiconair/properties"
@@ -98,6 +122,12 @@
   version = "v1.2.0"
 
 [[projects]]
+  branch = "single-gateway"
+  name = "github.com/thingful/big-iot-gateway-test"
+  packages = ["utils"]
+  revision = "3f379cf4d813b4582976a9f6820da34d0bb6d29b"
+
+[[projects]]
   name = "github.com/thingful/bigiot"
   packages = ["."]
   revision = "250f538dca5a0c878961265e93fc4905c2d76548"
@@ -142,6 +172,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "2b181f2dd948bbd1c88cb3de656d483aa3ae3b552d7af29350b281a84258aca4"
+  inputs-digest = "5c1cbcca2fe49ac72f1f694b85936adbb710607be3d937b19061679cee66f017"
   solver-name = "gps-cdcl"
   solver-version = 1
