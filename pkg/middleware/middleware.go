@@ -6,25 +6,23 @@ import (
 	"strings"
 
 	"github.com/thingful/big-iot-gateway/pkg/log"
+	"github.com/thingful/bigiot"
+	"goji.io/pat"
 )
 
 // authMiddleware is a middleware instance that exposes functionality to
 // validate incoming requests for the presence of a valid JWT provided by the
 // marketplace.
 type auth struct {
-	secret []byte
+	provider *bigiot.Provider
 }
 
-// NewAuthMiddleware initializes our authMiddleware instance,
+// NewAuth initializes our authMiddleware instance,
 // converting the string secret into a base64 byte slice. If this decoding fails
 // it returns an error, else the initialized middleware instance.
-func NewAuth(s string) (*auth, error) {
-	/*
-		secret := make([]byte, base64.StdEncoding.EncodedLen(len(s)))
-		base64.StdEncoding.Encode(secret, []byte(s))
-	*/
+func NewAuth(p *bigiot.Provider) (*auth, error) {
 	return &auth{
-		secret: []byte(s),
+		provider: p,
 	}, nil
 }
 
@@ -38,11 +36,22 @@ func (a *auth) Handler(next http.Handler) http.Handler {
 			log.Log("Unable to read token")
 			return
 		}
-		if token != string(a.secret) {
+
+		id, err := a.provider.ValidateToken(token)
+		if err != nil {
 			http.Error(w, "", http.StatusUnauthorized)
-			log.Log("token", token, "secret", string(a.secret))
+			log.Log("non valid token")
 			return
 		}
+		offeringID := pat.Param(r, "offeringID")
+
+		if id != offeringID {
+			http.Error(w, "", http.StatusUnauthorized)
+			log.Log("id", id)
+			log.Log("offeringID", offeringID)
+			return
+		}
+
 		next.ServeHTTP(w, r.WithContext(ctx))
 	}
 
@@ -55,7 +64,7 @@ func getToken(r *http.Request) (string, error) {
 	splitToken := strings.Split(reqToken, "Bearer")
 	reqToken = splitToken[1]
 	if reqToken == "" {
-		return "", errors.New("no auth token!")
+		return "", errors.New("no auth token")
 	}
 
 	return strings.Replace(reqToken, " ", "", -1), nil

@@ -9,16 +9,16 @@ import (
 
 // Config contains the required configuration for the gateway
 type Config struct {
-	MarketPlaceURI           string
-	ProviderID               string
-	ProviderSecret           string
-	OfferingActiveLengthSec  time.Duration
-	OfferingCheckIntervalSec time.Duration
-	OfferingEndPoint         string
-	PipeAccessToken          string
-	HTTPPort                 int
-	HTTPHost                 string
-	Debug                    bool
+	MarketPlaceURI           string        // Needed to manage offers
+	ProviderID               string        // Needed to login into Marketplace
+	ProviderSecret           string        // Needed to login into Marketplace
+	OfferingActiveLengthSec  time.Duration // timeout
+	OfferingCheckIntervalSec time.Duration // Offering Check interval
+	OfferingEndPoint         string        // not used yet
+	PipeAccessToken          string        // Token to access pipes
+	HTTPPort                 int           // GW port
+	HTTPHost                 string        // GW Host
+	Debug                    bool          // Debug Flag
 }
 
 // NewConfig return a new Config

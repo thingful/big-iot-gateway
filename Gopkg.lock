@@ -130,8 +130,8 @@
 [[projects]]
   name = "github.com/thingful/bigiot"
   packages = ["."]
-  revision = "250f538dca5a0c878961265e93fc4905c2d76548"
-  version = "v0.0.3"
+  revision = "0dddeb0ae1ef600d67c472e500a81d6b2582d570"
+  version = "v0.0.4"
 
 [[projects]]
   name = "goji.io"
@@ -172,6 +172,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "5c1cbcca2fe49ac72f1f694b85936adbb710607be3d937b19061679cee66f017"
+  inputs-digest = "aac7917743099fff2b582eb82e4d8ea7f05a446fdf9108f182864183b8ac0d73"
   solver-name = "gps-cdcl"
   solver-version = 1

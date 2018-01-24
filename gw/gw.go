@@ -67,6 +67,9 @@ var (
 
 // Start starts gw service
 func Start(config Config) error {
+
+	HTTPPort := cast.ToString(config.HTTPPort)
+
 	addCommonOutputToOfferings(offerings)
 
 	if config.Debug {
@@ -79,19 +82,19 @@ func Start(config Config) error {
 	}
 
 	for _, o := range offerings {
-		off := makeOffering(o, config.HTTPHost, cast.ToString(config.HTTPPort), config.OfferingActiveLengthSec)
+		off := makeOffering(o, config.HTTPHost, HTTPPort, config.OfferingActiveLengthSec)
 		_, err = provider.RegisterOffering(context.Background(), off)
 		if err != nil {
 			log.Log("msg", "Error Registering Offering:", err)
 		}
 
 		go func() {
-			err := offeringCheck(o, provider, "localhost", "8081", config.PipeAccessToken, config.OfferingCheckIntervalSec)
+			err := offeringCheck(o, provider, config.HTTPHost, HTTPPort, config.PipeAccessToken, config.OfferingCheckIntervalSec)
 			log.Log("debug", "", "Error checking Offering:", err)
 		}()
 	}
 
-	auth, err := middleware.NewAuth(config.ProviderSecret)
+	auth, err := middleware.NewAuth(provider)
 	if err != nil {
 		return (err)
 	}
