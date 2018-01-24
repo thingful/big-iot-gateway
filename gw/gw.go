@@ -15,6 +15,7 @@ import (
 	"github.com/spf13/viper"
 	"github.com/thingful/big-iot-gateway-test/utils"
 	"github.com/thingful/big-iot-gateway/pkg/log"
+	"github.com/thingful/big-iot-gateway/pkg/middleware"
 	"github.com/thingful/bigiot"
 	goji "goji.io"
 	"goji.io/pat"
@@ -89,7 +90,16 @@ func Start(config Config) error {
 			log.Log("debug", "", "Error checking Offering:", err)
 		}()
 	}
+
+	auth, err := middleware.NewAuth(config.ProviderSecret)
+	if err != nil {
+		return (err)
+	}
+
 	mux := goji.NewMux()
+
+	mux.HandleFunc(pat.Get("/pulse"), pulse)
+	mux.Use(auth.Handler)
 
 	mux.HandleFunc(pat.Get("/offering/:offeringID"), func(w http.ResponseWriter, r *http.Request) {
 		offeringID := pat.Param(r, "offeringID")
@@ -220,7 +230,7 @@ func offeringCheck(
 		if err != nil {
 			return err
 		}
-		log.Log("bytes", bytes)
+
 		// we unmarshal the response, check number of result
 		var m interface{}
 		err = json.Unmarshal(bytes, &m)
@@ -240,11 +250,12 @@ func offeringCheck(
 				return err
 			}
 
-			log.Log("msg", " COMPLETED\n")
+			log.Log("msg", " COMPLETED")
 
 		} else {
 			// delete offering from marketplace
-			log.Log("msg", "pipe for offering: %s return 0 result, deleting offering\n", offering.Name)
+			log.Log("msg", offering.Name+" returns 0 result, deleting offering", offering.Name)
+
 			deleteOfferingInput := &bigiot.DeleteOffering{
 				ID: offering.ID,
 			}
@@ -252,8 +263,12 @@ func offeringCheck(
 			if err != nil {
 				return err
 			}
-			log.Log("msg", " COMPLETED\n")
+			log.Log("msg", " COMPLETED")
 		}
 	}
 	return nil
+}
+
+func pulse(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, "ok")
 }
