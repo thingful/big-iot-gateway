@@ -5,6 +5,7 @@ type Output struct {
 	BigiotRDF  string // rdf of the Output
 	PipeTerm   string // field name in pipe's result
 }
+
 type Offer struct {
 	ID          string // id of offering, no space
 	Name        string // name of offering, wiht space
