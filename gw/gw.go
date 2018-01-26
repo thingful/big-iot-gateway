@@ -23,50 +23,27 @@ import (
 
 var (
 	// output that every offerings will have
-	commonOutputs = []utils.OfferingOutput{
-		utils.OfferingOutput{
+	commonOutputs = []Output{
+		Output{
 			BigiotName: "latitude",
 			BigiotRDF:  "http://schema.org/latitude",
 			PipeTerm:   "latitude",
 		},
-		utils.OfferingOutput{
+		Output{
 			BigiotName: "longitude",
 			BigiotRDF:  "http://schema.org/longitude",
 			PipeTerm:   "longitude",
 		},
-		utils.OfferingOutput{
+		Output{
 			BigiotName: "attribution",
 			BigiotRDF:  "http://xxx/yyy/zzz",
 			PipeTerm:   "provider.name",
 		},
 	}
-
-	offerings = []utils.OfferingConfig{ // this is where we define the offerings
-		utils.OfferingConfig{
-			ID:          "torinoWeather",
-			Name:        "Torino Weather",
-			City:        "Torino",
-			PipeURL:     "https://thingful-pipes.herokuapp.com/api/run/1b9cfeb3-c741-4673-ac5e-49c5ec3f7753",
-			Category:    "http://schema.org/environmental",
-			Datalicense: "CCBySAV4URL",
-			Outputs: []utils.OfferingOutput{
-				utils.OfferingOutput{
-					BigiotName: "airTemperatureValue",
-					BigiotRDF:  "schema:airTemperatureValue",
-					PipeTerm:   "Air Temperature, Weather Temperature, Ambient Temperature",
-				},
-				utils.OfferingOutput{
-					BigiotName: "airHumidityValue",
-					BigiotRDF:  "schema:airHumidityValue",
-					PipeTerm:   "Humidity",
-				},
-			},
-		},
-	}
 )
 
 // Start starts gw service
-func Start(config Config) error {
+func Start(config Config, offerings []Offer) error {
 
 	HTTPPort := cast.ToString(config.HTTPPort)
 
@@ -89,7 +66,7 @@ func Start(config Config) error {
 		}
 
 		go func() {
-			err := offeringCheck(o, provider, config.HTTPHost, HTTPPort, config.PipeAccessToken, config.OfferingCheckIntervalSec)
+			err := offeringCheck(o, provider, config.HTTPHost, HTTPPort, o.PipeAccessToken, config.OfferingCheckIntervalSec)
 			log.Log("debug", "", "Error checking Offering:", err)
 		}()
 	}
@@ -107,7 +84,7 @@ func Start(config Config) error {
 	mux.HandleFunc(pat.Get("/offering/:offeringID"), func(w http.ResponseWriter, r *http.Request) {
 		offeringID := pat.Param(r, "offeringID")
 		log.Log("msg", "incoming request for: ", offeringID)
-		index := utils.GetOfferingIndex(offeringID, offerings)
+		index := getOfferingIndex(offeringID, offerings)
 		if index == -1 { // we check if the path is valid, if not return 404
 			w.WriteHeader(404)
 			return
@@ -115,14 +92,14 @@ func Start(config Config) error {
 
 		// then we try to call pipe
 		pipeURL := offerings[index].PipeURL
-		pipeJSON, err := utils.MakePipeRequest(pipeURL, config.PipeAccessToken)
+		pipeJSON, err := utils.MakePipeRequest(pipeURL, offerings[index].PipeAccessToken)
 		if err != nil {
 			w.WriteHeader(500)
 			return
 		}
 
 		// now we reformat our json to their json
-		bigiotJSON, err := utils.ConvertJSON(pipeJSON, offerings[index])
+		bigiotJSON, err := ConvertJSON(pipeJSON, offerings[index])
 		if err != nil {
 			w.WriteHeader(500)
 			return
@@ -139,7 +116,7 @@ func Start(config Config) error {
 	return nil
 }
 
-func addCommonOutputToOfferings(o []utils.OfferingConfig) {
+func addCommonOutputToOfferings(o []Offer) {
 	for i := range o {
 		o[i].Outputs = append(o[i].Outputs, commonOutputs...)
 	}
@@ -164,7 +141,7 @@ func authenticateProvider(id, secret, uri string) (*bigiot.Provider, error) {
 	return provider, err
 }
 
-func makeOffering(o utils.OfferingConfig, host string, port string, offeringActiveLengthSec time.Duration) *bigiot.OfferingDescription {
+func makeOffering(o Offer, host string, port string, offeringActiveLengthSec time.Duration) *bigiot.OfferingDescription {
 	addOfferingInput := &bigiot.OfferingDescription{
 		LocalID: o.ID,
 		Name:    o.Name,
@@ -219,16 +196,17 @@ func makeOffering(o utils.OfferingConfig, host string, port string, offeringActi
 
 // the first register could also happen here
 func offeringCheck(
-	offering utils.OfferingConfig,
+	offering Offer,
 	provider *bigiot.Provider,
 	host string,
 	port string,
 	pipeAccessToken string,
 	offeringCheckIntervalSec time.Duration) error {
 
-	for range time.Tick(time.Second * offeringCheckIntervalSec) {
-		log.Log("debug", "", "now we check for offering:", offering.Name, "pipeURL", offering.PipeURL)
-		log.Log("pipeAccessToken", pipeAccessToken)
+	ticker := time.NewTicker(time.Second * offeringCheckIntervalSec)
+	for range ticker.C {
+		//log.Log("debug", "", "now we check for offering:", offering.Name, "pipeURL", offering.PipeURL)
+		//log.Log("pipeAccessToken", pipeAccessToken)
 		bytes, err := utils.MakePipeRequest(offering.PipeURL+"?limit=1", pipeAccessToken)
 		if err != nil {
 			return err
@@ -243,17 +221,15 @@ func offeringCheck(
 
 		j := m.([]interface{}) //type case to slice first
 		if len(j) == 1 {
-
-			log.Log("msg", "pipe for offering: ", offering.Name, " return 1 result, re-registering offering:")
-
+			//Debug
+			//log.Log("msg", "pipe for offering: ", offering.Name, " return 1 result, re-registering offering:")
 			off := makeOffering(offering, host, port, offeringCheckIntervalSec)
-			// spew.Dump(off)
 			_, err = provider.RegisterOffering(context.Background(), off)
 			if err != nil {
 				return err
 			}
-
-			log.Log("msg", " COMPLETED")
+			//Debug
+			//log.Log("msg", " COMPLETED")
 
 		} else {
 			// delete offering from marketplace
@@ -266,7 +242,7 @@ func offeringCheck(
 			if err != nil {
 				return err
 			}
-			log.Log("msg", " COMPLETED")
+			//log.Log("msg", " COMPLETED")
 		}
 	}
 	return nil
@@ -274,4 +250,52 @@ func offeringCheck(
 
 func pulse(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "ok")
+}
+
+func getOfferingIndex(id string, offerings []Offer) int {
+	offeringIndex := -1
+	for i, offering := range offerings {
+		if id == strings.ToLower(offering.ID) {
+			offeringIndex = i
+			break
+		}
+	}
+	return offeringIndex
+}
+
+// ConvertJSON takes pipe json and change to big-iot json depends on offerinConfig provide
+func ConvertJSON(pipeJson []byte, offering Offer) ([]byte, error) {
+
+	output := []map[string]interface{}{}
+
+	var m interface{}
+	err := json.Unmarshal(pipeJson, &m)
+	if err != nil {
+		return nil, err
+	}
+
+	j := m.([]interface{}) //type case to slice first
+
+	for _, member := range j {
+		pipeData := member.(map[string]interface{}) // then for each member, cast to map string interface
+
+		bigiotData := map[string]interface{}{} // make temporary var
+
+		for _, output := range offering.Outputs {
+			if val, ok := pipeData[output.PipeTerm]; ok { // find if the key exist, if it does assign it
+				bigiotData[output.BigiotName] = val
+			} else { // if it doesn't exist, assing default value
+				bigiotData[output.BigiotName] = ""
+			}
+		}
+
+		output = append(output, bigiotData)
+	}
+
+	s, err := json.Marshal(output)
+	if err != nil {
+		return nil, err
+	}
+
+	return s, nil
 }

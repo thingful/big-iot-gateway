@@ -32,24 +32,25 @@ func (a *auth) Handler(next http.Handler) http.Handler {
 
 		token, err := getToken(r)
 		if err != nil {
-			http.Error(w, "Unable to read token", http.StatusBadRequest)
+			http.Error(w, "", http.StatusBadRequest)
 			log.Log("Unable to read token")
 			return
 		}
 
 		id, err := a.provider.ValidateToken(token)
 		if err != nil {
-			http.Error(w, "", http.StatusUnauthorized)
+			//http.Error(w, "", http.StatusUnauthorized)
 			log.Log("non valid token")
-			return
+			//return
 		}
 		offeringID := pat.Param(r, "offeringID")
+		log.Log("debug-offeringID", offeringID)
 
 		if id != offeringID {
-			http.Error(w, "", http.StatusUnauthorized)
+			//http.Error(w, "", http.StatusUnauthorized)
 			log.Log("id", id)
 			log.Log("offeringID", offeringID)
-			return
+			//return
 		}
 
 		next.ServeHTTP(w, r.WithContext(ctx))
@@ -61,11 +62,16 @@ func (a *auth) Handler(next http.Handler) http.Handler {
 // getToken extracts the token string from the request or returns an error
 func getToken(r *http.Request) (string, error) {
 	reqToken := r.Header.Get("Authorization")
+	if reqToken == "" {
+		return "", errors.New("no auth token")
+	}
 	splitToken := strings.Split(reqToken, "Bearer")
+	if len(splitToken) < 2 {
+		return "", errors.New("no valid token")
+	}
 	reqToken = splitToken[1]
 	if reqToken == "" {
 		return "", errors.New("no auth token")
 	}
-
 	return strings.Replace(reqToken, " ", "", -1), nil
 }

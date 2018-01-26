@@ -23,7 +23,7 @@ func Log(keyvals ...interface{}) {
 
 // Fatal
 func Fatal(v ...interface{}) {
-	log.Fatal(v)
+	log.Fatal(v...)
 }
 
 func Caller(depth int) func() interface{} {

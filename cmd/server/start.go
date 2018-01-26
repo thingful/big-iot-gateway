@@ -14,8 +14,6 @@ var startCmd = &cobra.Command{
 	Use:   "start",
 	Short: "Start BIG-IoT Gateway",
 	Run: func(cmd *cobra.Command, args []string) {
-		log.Log("msg", "start called")
-
 		// A goroutine listening for a ctrl+c signal
 		go func() {
 			<-exitChan
@@ -24,15 +22,18 @@ var startCmd = &cobra.Command{
 			os.Exit(1)
 		}()
 
-		log.Log(viper.AllSettings())
-
 		config := gw.NewConfig()
 		err := config.Load(viper.AllSettings())
 		if err != nil {
 			panic(err)
 		}
 
-		if err := gw.Start(config); err != nil {
+		offerings := gw.OfferConf{}
+		if err := offers.Unmarshal(&offerings); err != nil {
+			panic(err)
+		}
+
+		if err := gw.Start(config, offerings.Offers); err != nil {
 			panic(err)
 		}
 	},

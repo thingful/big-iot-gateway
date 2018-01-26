@@ -15,7 +15,6 @@ type Config struct {
 	OfferingActiveLengthSec  time.Duration // timeout
 	OfferingCheckIntervalSec time.Duration // Offering Check interval
 	OfferingEndPoint         string        // not used yet
-	PipeAccessToken          string        // Token to access pipes
 	HTTPPort                 int           // GW port
 	HTTPHost                 string        // GW Host
 	Debug                    bool          // Debug Flag
@@ -59,11 +58,6 @@ func (c *Config) Load(conf map[string]interface{}) error {
 		c.OfferingEndPoint = cast.ToString(val)
 	} else {
 		return errors.New("offeringEndpoint is not set")
-	}
-	if val, ok := conf["pipeaccesstoken"]; ok {
-		c.PipeAccessToken = cast.ToString(val)
-	} else {
-		return errors.New("pipeAccessToken is not set")
 	}
 	if val, ok := conf["httpport"]; ok {
 		c.HTTPPort = cast.ToInt(val)

@@ -1,0 +1,41 @@
+{
+    "offers": [
+      {
+        "ID": "torino-weather",
+        "Name": "Torino Weather",
+        "City": "Torino",
+        "PipeURL": "https://thingful-pipes.herokuapp.com/api/run/1b9cfeb3-c741-4673-ac5e-49c5ec3f7753",
+        "PipeAccessToken": "f94a62e6-455f-4a5e-8f7a-36f000cace4d",
+        "Category": "http://schema.org/environmental",
+        "Datalicense": "CCBySAV4URL",
+        "Outputs": [
+          {
+            "BigiotName": "airTemperatureValue",
+            "BigiotRDF": "schema:airTemperatureValue",
+            "PipeTerm": "Air Temperature, Weather Temperature, Ambient Temperature"
+          },
+          {
+            "BigiotName": "airHumidityValue",
+            "BigiotRDF": "schema:airHumidityValue",
+            "PipeTerm": "Humidity"
+          }
+        ]
+      },
+      {
+        "ID": "torino-traffic-speed",
+        "Name": "Torino Traffic Speed Average",
+        "City": "Torino",
+        "PipeURL": "https://thingful-pipes.herokuapp.com/api/run/3f26383d-7336-45ed-af0b-4e6997d9c551",
+        "PipeAccessToken": "b9a99462-a031-41aa-aa21-8aacd738085a",
+        "Category": "http://schema.big-iot.org/mobility/TrafficSpeed",
+        "Datalicense": "CCBySAV4URL",
+        "Outputs": [
+          {
+            "BigiotName": "SpeedAverage",
+            "BigiotRDF": "schema:mobility/TrafficSpeed",
+            "PipeTerm": "Speed Average"
+          }
+        ]
+      }
+    ]
+  }
