@@ -66,7 +66,7 @@ func Start(config Config, offerings []Offer) error {
 		}
 
 		go func() {
-			err := offeringCheck(o, provider, config.HTTPHost, HTTPPort, o.PipeAccessToken, config.OfferingCheckIntervalSec)
+			err := offeringCheck(o, provider, config.HTTPHost, HTTPPort, config.PipeAccessToken, config.OfferingCheckIntervalSec)
 			log.Log("debug", "", "Error checking Offering:", err)
 		}()
 	}
@@ -92,7 +92,7 @@ func Start(config Config, offerings []Offer) error {
 
 		// then we try to call pipe
 		pipeURL := offerings[index].PipeURL
-		pipeJSON, err := utils.MakePipeRequest(pipeURL, offerings[index].PipeAccessToken)
+		pipeJSON, err := utils.MakePipeRequest(pipeURL, config.PipeAccessToken)
 		if err != nil {
 			w.WriteHeader(500)
 			return
