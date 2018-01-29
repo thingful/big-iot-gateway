@@ -50,17 +50,6 @@ func init() {
 	RootCmd.PersistentFlags().Int("HTTPPort", 8080, "HTTP Port where will be running the service")
 	RootCmd.PersistentFlags().String("HTTPHost", "localhost", "HTTP Hostname where will be running the service")
 	RootCmd.PersistentFlags().Bool("debug", false, "enable debug")
-	/*
-		bindViper(RootCmd.Flags(),
-			"marketPlaceURI",
-			"providerID",
-			"providerSecret",
-			"offeringActiveLengthSec",
-			"offeringCheckIntervalSec",
-			"offeringEndpoint",
-			"pipeAccessToken",
-		)
-	*/
 
 	viper.BindPFlag("marketPlaceURI", RootCmd.PersistentFlags().Lookup("marketPlaceURI"))
 	viper.BindPFlag("providerID", RootCmd.PersistentFlags().Lookup("providerID"))

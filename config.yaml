@@ -3,7 +3,6 @@ marketPlaceURI: https://market.big-iot.org
 #NOT USED
 offeringEndpoint: https://ec2-35-157-149-71.eu-central-1.compute.amazonaws.com:8888/bigiot/access/airqualitydata
 
-httpPort: 8081
 
 httpHost: localhost
 

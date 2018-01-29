@@ -2,6 +2,7 @@ package gw
 
 import (
 	"errors"
+	"os"
 	"time"
 
 	"github.com/spf13/cast"
@@ -65,10 +66,11 @@ func (c *Config) Load(conf map[string]interface{}) error {
 	} else {
 		return errors.New("pipeAccessToken is not set")
 	}
-	if val, ok := conf["httpport"]; ok {
+	if val, ok := conf["PORT"]; ok {
 		c.HTTPPort = cast.ToInt(val)
 	} else {
-		return errors.New("httpport is not set")
+		c.HTTPPort = cast.ToInt(os.Getenv("PORT"))
+		//return errors.New("PORT is not set")
 	}
 	if val, ok := conf["httphost"]; ok {
 		c.HTTPHost = cast.ToString(val)

@@ -16,4 +16,4 @@ EXPOSE 8080
 COPY --from=builder /go/src/github.com/thingful/big-iot-gateway/build/big-iot-gateway /app/
 ADD ./config.yaml /app/
 ADD ./offers.json /app/
-RUN /app/big-iot-gateway
+CMD /app/big-iot-gateway start --config config.yaml --offeringEndpoint=http://localhost:8080 --providerID=Thingful_test-Thingful_test_provider --providerSecret=ZoGeUUfnShyDZSasrlF-Rw== --debug --pipeAccessToken=b9a99462-a031-41aa-aa21-8aacd738085a
