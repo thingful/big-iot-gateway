@@ -13,9 +13,9 @@ import (
 	"time"
 
 	"github.com/spf13/viper"
-	"github.com/thingful/big-iot-gateway-test/utils"
 	"github.com/thingful/big-iot-gateway/pkg/log"
 	"github.com/thingful/big-iot-gateway/pkg/middleware"
+	"github.com/thingful/big-iot-gateway/pkg/pipes"
 	"github.com/thingful/bigiot"
 	goji "goji.io"
 	"goji.io/pat"
@@ -92,7 +92,7 @@ func Start(config Config, offerings []Offer) error {
 
 		// then we try to call pipe
 		pipeURL := offerings[index].PipeURL
-		pipeJSON, err := utils.MakePipeRequest(pipeURL, config.PipeAccessToken)
+		pipeJSON, err := pipes.MakeRequest(pipeURL, config.PipeAccessToken)
 		if err != nil {
 			w.WriteHeader(500)
 			return
@@ -207,7 +207,7 @@ func offeringCheck(
 	for range ticker.C {
 		//log.Log("debug", "", "now we check for offering:", offering.Name, "pipeURL", offering.PipeURL)
 		//log.Log("pipeAccessToken", pipeAccessToken)
-		bytes, err := utils.MakePipeRequest(offering.PipeURL+"?limit=1", pipeAccessToken)
+		bytes, err := pipes.MakeRequest(offering.PipeURL+"?limit=1", pipeAccessToken)
 		if err != nil {
 			return err
 		}
