@@ -7,7 +7,6 @@ import (
 
 	"github.com/thingful/big-iot-gateway/pkg/log"
 	"github.com/thingful/bigiot"
-	"goji.io/pat"
 )
 
 // authMiddleware is a middleware instance that exposes functionality to
@@ -30,28 +29,28 @@ func (a *auth) Handler(next http.Handler) http.Handler {
 	fn := func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
 
-		token, err := getToken(r)
+		_, err := getToken(r)
 		if err != nil {
-			http.Error(w, "", http.StatusBadRequest)
-			log.Log("Unable to read token")
+			http.Error(w, "Missing token", http.StatusBadRequest)
+			log.Log("error", "Unable to read token")
 			return
 		}
 
-		id, err := a.provider.ValidateToken(token)
-		if err != nil {
-			//http.Error(w, "", http.StatusUnauthorized)
-			log.Log("non valid token")
-			//return
-		}
-		offeringID := pat.Param(r, "offeringID")
-		log.Log("debug-offeringID", offeringID)
+		//id, err := a.provider.ValidateToken(token)
+		//if err != nil {
+		//	log.Log("error", "non valid token")
+		//	http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		//	return
+		//}
 
-		if id != offeringID {
-			//http.Error(w, "", http.StatusUnauthorized)
-			log.Log("id", id)
-			log.Log("offeringID", offeringID)
-			//return
-		}
+		//offeringID := pat.Param(r, "offeringID")
+		//log.Log("debug-offeringID", offeringID)
+
+		//if id != offeringID {
+		//	log.Log("id", id, "offeringID", offeringID, "error", "token id does not match reqeusted")
+		//	http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		//	return
+		//}
 
 		next.ServeHTTP(w, r.WithContext(ctx))
 	}

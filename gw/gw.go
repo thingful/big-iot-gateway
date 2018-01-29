@@ -6,9 +6,8 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/spf13/cast"
-
 	"net/http"
+	"net/url"
 	"strings"
 	"time"
 
@@ -36,7 +35,7 @@ var (
 		},
 		Output{
 			BigiotName: "attribution",
-			BigiotRDF:  "http://xxx/yyy/zzz",
+			BigiotRDF:  "http://schema.org/attribution",
 			PipeTerm:   "provider.name",
 		},
 	}
@@ -44,8 +43,6 @@ var (
 
 // Start starts gw service
 func Start(config Config, offerings []Offer) error {
-
-	HTTPPort := cast.ToString(config.HTTPPort)
 
 	addCommonOutputToOfferings(offerings)
 
@@ -58,15 +55,21 @@ func Start(config Config, offerings []Offer) error {
 		return err
 	}
 
+	offeringEndpoint, err := url.Parse(config.OfferingEndPoint)
+	if err != nil {
+		return err
+	}
+
 	for _, o := range offerings {
-		off := makeOffering(o, config.HTTPHost, HTTPPort, config.OfferingActiveLengthSec)
+		//off := makeOffering(o, config.HTTPHost, HTTPPort, config.OfferingActiveLengthSec)
+		off := makeOffering(o, offeringEndpoint.Host, config.OfferingActiveLengthSec)
 		_, err = provider.RegisterOffering(context.Background(), off)
 		if err != nil {
 			log.Log("msg", "Error Registering Offering:", err)
 		}
 
 		go func() {
-			err := offeringCheck(o, provider, config.HTTPHost, HTTPPort, config.PipeAccessToken, config.OfferingCheckIntervalSec)
+			err := offeringCheck(o, provider, offeringEndpoint.Host, config.PipeAccessToken, config.OfferingCheckIntervalSec)
 			log.Log("debug", "", "Error checking Offering:", err)
 		}()
 	}
@@ -83,17 +86,20 @@ func Start(config Config, offerings []Offer) error {
 
 	mux.HandleFunc(pat.Get("/offering/:offeringID"), func(w http.ResponseWriter, r *http.Request) {
 		offeringID := pat.Param(r, "offeringID")
-		log.Log("msg", "incoming request for: ", offeringID)
+		log.Log("offeringID", offeringID, "msg", "incoming request")
 		index := getOfferingIndex(offeringID, offerings)
 		if index == -1 { // we check if the path is valid, if not return 404
 			w.WriteHeader(404)
 			return
 		}
 
+		log.Log("pipeURL", offerings[index].PipeURL, "token", config.PipeAccessToken)
+
 		// then we try to call pipe
 		pipeURL := offerings[index].PipeURL
 		pipeJSON, err := pipes.MakeRequest(pipeURL, config.PipeAccessToken)
 		if err != nil {
+			log.Log("error", err)
 			w.WriteHeader(500)
 			return
 		}
@@ -101,13 +107,14 @@ func Start(config Config, offerings []Offer) error {
 		// now we reformat our json to their json
 		bigiotJSON, err := ConvertJSON(pipeJSON, offerings[index])
 		if err != nil {
+			log.Log("error", err)
 			w.WriteHeader(500)
 			return
 		}
 
 		w.Header().Set("Content-Type", "application/json")
 		if _, err := io.WriteString(w, string(bigiotJSON)); err != nil {
-			log.Log(err)
+			log.Log("error", err)
 		}
 	})
 
@@ -141,7 +148,7 @@ func authenticateProvider(id, secret, uri string) (*bigiot.Provider, error) {
 	return provider, err
 }
 
-func makeOffering(o Offer, host string, port string, offeringActiveLengthSec time.Duration) *bigiot.OfferingDescription {
+func makeOffering(o Offer, host string, offeringActiveLengthSec time.Duration) *bigiot.OfferingDescription {
 	addOfferingInput := &bigiot.OfferingDescription{
 		LocalID: o.ID,
 		Name:    o.Name,
@@ -162,7 +169,7 @@ func makeOffering(o Offer, host string, port string, offeringActiveLengthSec tim
 		},
 		Endpoints: []bigiot.Endpoint{
 			{
-				URI:                 fmt.Sprintf("http://%s:%s/offering/%s", host, port, strings.ToLower(o.ID)),
+				URI:                 fmt.Sprintf("http://%s/offering/%s", host, strings.ToLower(o.ID)),
 				EndpointType:        bigiot.HTTPGet,
 				AccessInterfaceType: bigiot.BIGIoTLib,
 			},
@@ -199,7 +206,6 @@ func offeringCheck(
 	offering Offer,
 	provider *bigiot.Provider,
 	host string,
-	port string,
 	pipeAccessToken string,
 	offeringCheckIntervalSec time.Duration) error {
 
@@ -212,6 +218,7 @@ func offeringCheck(
 			return err
 		}
 
+		fmt.Println(string(bytes))
 		// we unmarshal the response, check number of result
 		var m interface{}
 		err = json.Unmarshal(bytes, &m)
@@ -223,7 +230,7 @@ func offeringCheck(
 		if len(j) == 1 {
 			//Debug
 			//log.Log("msg", "pipe for offering: ", offering.Name, " return 1 result, re-registering offering:")
-			off := makeOffering(offering, host, port, offeringCheckIntervalSec)
+			off := makeOffering(offering, host, offeringCheckIntervalSec)
 			_, err = provider.RegisterOffering(context.Background(), off)
 			if err != nil {
 				return err
@@ -260,6 +267,7 @@ func getOfferingIndex(id string, offerings []Offer) int {
 			break
 		}
 	}
+	log.Log("index", offeringIndex)
 	return offeringIndex
 }
 

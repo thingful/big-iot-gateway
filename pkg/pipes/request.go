@@ -1,6 +1,7 @@
 package pipes
 
 import (
+	"fmt"
 	"io/ioutil"
 	"net/http"
 )
@@ -22,6 +23,11 @@ func MakeRequest(url string, token string) ([]byte, error) {
 	}
 
 	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("Unexpected response: %s", resp.Status)
+	}
+
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		return nil, err
