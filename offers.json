@@ -1,81 +1,81 @@
 {
   "offers": [
     {
-      "ID": "torino-weather",
+      "ID": "torino_weather",
       "Name": "Torino Weather",
       "City": "Torino",
       "PipeURL": "https://thingful-pipes.herokuapp.com/api/run/8ced53ba-284a-4a5a-87ca-d67fa3629520",
-      "Category": "http://schema.org/environmental",
+      "Category": "bigiot:environmental",
       "Datalicense": "CCBySAV4URL",
       "Price": 0,
       "Outputs": [
         {
           "BigiotName": "airTemperatureValue",
-          "BigiotRDF": "schema:airTemperatureValue",
+          "BigiotRDF": "bigiot:airTemperatureValue",
           "PipeTerm": "Air Temperature, Weather Temperature, Ambient Temperature"
         }
       ]
     },
     {
-      "ID": "torino-weather-humidity",
+      "ID": "torino_weather_humidity",
       "Name": "Torino Weather",
       "City": "Torino",
       "PipeURL": "https://thingful-pipes.herokuapp.com/api/run/39429ddb-f42c-485e-bf49-232b7675b61c",
-      "Category": "http://schema.org/environmental",
+      "Category": "bigiot:environmental",
       "Datalicense": "CCBySAV4URL",
       "Price": 0,
       "Outputs": [
         {
           "BigiotName": "airHumidityValue",
-          "BigiotRDF": "schema:airHumidityValue",
+          "BigiotRDF": "bigiot:airHumidityValue",
           "PipeTerm": "Humidity"
         }
       ]
     },
     {
-      "ID": "torino-traffic-speed",
+      "ID": "torino_traffic_speed",
       "Name": "Torino Traffic Speed Average",
       "City": "Torino",
       "PipeURL": "https://thingful-pipes.herokuapp.com/api/run/3f26383d-7336-45ed-af0b-4e6997d9c551",
-      "Category": "http://schema.big-iot.org/mobility",
+      "Category": "bigiot:mobility",
       "Datalicense": "IODLV2URL",
       "Price": 0.02,
       "Outputs": [
         {
           "BigiotName": "SpeedAverage",
-          "BigiotRDF": "schema:TrafficSpeed",
+          "BigiotRDF": "bigiot:TrafficSpeed",
           "PipeTerm": "Speed Average"
         }
       ]
     },
     {
-      "ID": "torino-parking-total-capacity",
+      "ID": "torino_parking_total_capacity",
       "Name": "Torino Parking Total Capacity",
       "City": "Torino",
       "PipeURL": "https://thingful-pipes.herokuapp.com/api/run/d3f0a0a5-03b9-43a1-a32a-e29605ee7d4c",
-      "Category": "http://schema.org/totalCapacity",
+      "Category": "bigiot:Parking",
       "Datalicense": "IODLV2URL",
       "Price": 0.02,
       "Outputs": [
         {
           "BigiotName": "totalCapacity",
-          "BigiotRDF": "schema:totalCapacity",
+          "BigiotRDF": "bigiot:parkingTotalCapacity",
           "PipeTerm": "total capacity"
         }
       ]
     },
     {
-      "ID": "torino-parking-vacant-spaces",
+      "ID": "torino_parking_vacant_spaces",
       "Name": "Torino Parking Number of Vacant Spaces",
       "City": "Torino",
       "PipeURL": "https://thingful-pipes.herokuapp.com/api/run/b3c98aa7-4107-4ba6-8a0a-15a43a17ae97",
-      "Category": "http://schema.org/parkingNumberOfVacantSpaces ",
+      "Category": "bigiot:Parking",
       "Datalicense": "IODLV2URL",
       "Price": 0.02,
       "Outputs": [
         {
           "BigiotName": "numberOfVacantParkingSpaces",
-          "BigiotRDF": "schema:parkingNumberOfVacantSpaces",
+          "BigiotRDF": "bigiot:parkingNumberOfVacantSpaces",
           "PipeTerm": "number of vacant parking spaces"
         }
       ]
