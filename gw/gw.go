@@ -51,7 +51,7 @@ func Start(config Config, offers []Offer) error {
 	addCommonOutputToOfferings(offers)
 
 	if config.Debug {
-		log.Log("Debug", "", "Settings", viper.AllSettings())
+		log.Log("Settings", viper.AllSettings())
 	}
 
 	provider, err := authenticateProvider(config.ProviderID, config.ProviderSecret, config.MarketPlaceURI)
@@ -77,19 +77,24 @@ func Start(config Config, offers []Offer) error {
 
 		go func() {
 			err := offeringCheck(o, provider, offeringEndpoint.Host, config.PipeAccessToken, config.OfferingCheckIntervalSec)
-			log.Log("debug", "", "Error checking Offering:", err)
+			log.Log("msg", "Error checking Offering:", "error", err)
 		}()
-	}
-
-	auth, err := middleware.NewAuth(provider)
-	if err != nil {
-		return err
 	}
 
 	mux := goji.NewMux()
 
 	mux.HandleFunc(pat.Get("/pulse"), pulse)
-	mux.Use(auth.Handler)
+
+	if !config.NoAuth {
+		log.Log("msg", "ading auth mddleware")
+		auth, err := middleware.NewAuth(provider)
+		if err != nil {
+			return err
+		}
+		mux.Use(auth.Handler)
+	} else {
+		log.Log("msg", "no auth")
+	}
 
 	mux.HandleFunc(pat.Get("/offering/:offeringID"), func(w http.ResponseWriter, r *http.Request) {
 		offeringID := pat.Param(r, "offeringID")
@@ -266,8 +271,6 @@ func offeringCheck(
 
 		j := m.([]interface{}) //type case to slice first
 		if len(j) == 1 {
-			//Debug
-			//log.Log("msg", "pipe for offering: ", offering.Name, " return 1 result, re-registering offering:")
 			offeringDescription := makeOfferingInput(offering, host, offeringCheckIntervalSec)
 			_, err := provider.RegisterOffering(context.Background(), offeringDescription)
 			if err != nil {
@@ -285,7 +288,6 @@ func offeringCheck(
 			if err != nil {
 				return err
 			}
-			//log.Log("msg", " COMPLETED")
 		}
 	}
 	return nil

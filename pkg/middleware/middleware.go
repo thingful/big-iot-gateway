@@ -38,6 +38,9 @@ func (a *auth) Handler(next http.Handler) http.Handler {
 			return
 		}
 
+		log.Log("token", token)
+
+		// this returns the full id of the subscribable resource
 		id, err := a.provider.ValidateToken(token)
 		if err != nil {
 			log.Log("error", "non valid token")
@@ -45,11 +48,17 @@ func (a *auth) Handler(next http.Handler) http.Handler {
 			return
 		}
 
+		// we need to convert the full id into how we describe locally which is just the last part
+		idParts := strings.Split(id, "-")
+		if len(idParts) != 3 {
+			log.Log("error", "id does not have enough parts")
+		}
+
 		offeringID := pat.Param(r, "offeringID")
 		log.Log("debug-offeringID", offeringID)
 
-		if id != offeringID {
-			log.Log("id", id, "offeringID", offeringID, "error", "token id does not match reqeusted")
+		if idParts[2] != offeringID {
+			log.Log("tokenID", idParts[2], "requestedID", offeringID, "error", "token id does not match reqeusted")
 			http.Error(w, "Unauthorized", http.StatusUnauthorized)
 			return
 		}

@@ -19,6 +19,7 @@ type Config struct {
 	HTTPPort                 int           // GW port
 	HTTPHost                 string        // GW Host
 	Debug                    bool          // Debug Flag
+	NoAuth                   bool          // disable auth flag
 }
 
 // NewConfig return a new Config
@@ -77,6 +78,9 @@ func (c *Config) Load(conf map[string]interface{}) error {
 	}
 	if val, ok := conf["debug"]; ok {
 		c.Debug = cast.ToBool(val)
+	}
+	if val, ok := conf["noauth"]; ok {
+		c.NoAuth = cast.ToBool(val)
 	}
 	return nil
 }
