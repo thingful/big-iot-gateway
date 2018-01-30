@@ -7,4 +7,5 @@ set -euo pipefail
   --debug \
   --offerFile offers.json \
   --offeringCheckIntervalSec 30 \
-  --offeringEndpoint http://538e0ed7.ngrok.io
+  --offeringEndpoint http://538e0ed7.ngrok.io \
+  "$@"
