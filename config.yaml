@@ -1,4 +1,7 @@
 marketPlaceURI: https://market.big-iot.org
+providerID: Thingful-Thingful
+providerSecret: q9SVP99RSnWmb27be5JCug==
+pipeAccessToken: b9a99462-a031-41aa-aa21-8aacd738085a
 
 #NOT USED
 offeringEndpoint: https://ec2-35-157-149-71.eu-central-1.compute.amazonaws.com:8888/bigiot/access/airqualitydata

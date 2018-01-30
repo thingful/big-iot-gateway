@@ -14,6 +14,7 @@ type Offer struct {
 	Category    string // big-iot ontology represent categoty of this offering
 	Datalicense string // big-iot datalicense
 	Outputs     []Output
+	Price       float64 // price in cents
 }
 
 type OfferConf struct {
