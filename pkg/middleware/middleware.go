@@ -32,25 +32,31 @@ func (a *auth) Handler(next http.Handler) http.Handler {
 
 		token, err := getToken(r)
 		if err != nil {
-			http.Error(w, "", http.StatusBadRequest)
-			log.Log("Unable to read token")
+			http.Error(w, "Missing Token", http.StatusBadRequest)
+			log.Log("error", "Unable to read token")
 			return
 		}
 
 		id, err := a.provider.ValidateToken(token)
 		if err != nil {
-			//http.Error(w, "", http.StatusUnauthorized)
-			log.Log("non valid token")
-			//return
+			http.Error(w, "Unauthorized", http.StatusUnauthorized)
+			log.Log("error", "non valid token")
+			return
 		}
+
+		// we need to convert the full id into how we describe locally which is just the last part
+		idParts := strings.Split(id, "-")
+		if len(idParts) != 3 {
+			log.Log("error", "id does not have enough parts")
+		}
+
 		offeringID := pat.Param(r, "offeringID")
 		log.Log("debug-offeringID", offeringID)
 
-		if id != offeringID {
-			//http.Error(w, "", http.StatusUnauthorized)
-			log.Log("id", id)
-			log.Log("offeringID", offeringID)
-			//return
+		if idParts[2] != offeringID {
+			log.Log("tokenID", idParts[2], "requestedID", offeringID, "error", "token id does not match reqeusted")
+			http.Error(w, "Unauthorized", http.StatusUnauthorized)
+			return
 		}
 
 		next.ServeHTTP(w, r.WithContext(ctx))
