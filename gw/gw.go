@@ -5,10 +5,11 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-
-	"github.com/spf13/cast"
+	"os"
+	"os/signal"
 
 	"net/http"
+	"net/url"
 	"strings"
 	"time"
 
@@ -36,21 +37,21 @@ var (
 		},
 		Output{
 			BigiotName: "attribution",
-			BigiotRDF:  "http://xxx/yyy/zzz",
+			BigiotRDF:  "http://schema.org/attribution",
 			PipeTerm:   "provider.name",
 		},
 	}
 )
 
 // Start starts gw service
-func Start(config Config, offerings []Offer) error {
+func Start(config Config, offers []Offer) error {
+	stop := make(chan os.Signal)
+	signal.Notify(stop, os.Interrupt)
 
-	HTTPPort := cast.ToString(config.HTTPPort)
-
-	addCommonOutputToOfferings(offerings)
+	addCommonOutputToOfferings(offers)
 
 	if config.Debug {
-		log.Log("Debug", "", "Settings", viper.AllSettings())
+		log.Log("Settings", viper.AllSettings())
 	}
 
 	provider, err := authenticateProvider(config.ProviderID, config.ProviderSecret, config.MarketPlaceURI)
@@ -58,62 +59,107 @@ func Start(config Config, offerings []Offer) error {
 		return err
 	}
 
-	for _, o := range offerings {
-		off := makeOffering(o, config.HTTPHost, HTTPPort, config.OfferingActiveLengthSec)
-		_, err = provider.RegisterOffering(context.Background(), off)
+	offeringEndpoint, err := url.Parse(config.OfferingEndPoint)
+	if err != nil {
+		return err
+	}
+
+	offerings := []*bigiot.Offering{}
+
+	for _, o := range offers {
+		offeringDescription := makeOfferingInput(o, offeringEndpoint.Host, config.OfferingActiveLengthSec)
+		offering, err := provider.RegisterOffering(context.Background(), offeringDescription)
 		if err != nil {
 			log.Log("msg", "Error Registering Offering:", err)
 		}
 
-		go func() {
-			err := offeringCheck(o, provider, config.HTTPHost, HTTPPort, config.PipeAccessToken, config.OfferingCheckIntervalSec)
-			log.Log("debug", "", "Error checking Offering:", err)
-		}()
-	}
+		offerings = append(offerings, offering)
 
-	auth, err := middleware.NewAuth(provider)
-	if err != nil {
-		return (err)
+		go func() {
+			err := offeringCheck(o, provider, config.OfferingEndPoint, config.PipeAccessToken, config.OfferingCheckIntervalSec)
+			log.Log("msg", "Error checking Offering:", "error", err)
+		}()
 	}
 
 	mux := goji.NewMux()
 
 	mux.HandleFunc(pat.Get("/pulse"), pulse)
-	mux.Use(auth.Handler)
+	if !config.NoAuth {
+		log.Log("msg", "adding auth middleware")
+		auth, err := middleware.NewAuth(provider)
+		if err != nil {
+			return err
+		}
+		mux.Use(auth.Handler)
+	} else {
+		log.Log("msg", "no auth")
+	}
 
 	mux.HandleFunc(pat.Get("/offering/:offeringID"), func(w http.ResponseWriter, r *http.Request) {
 		offeringID := pat.Param(r, "offeringID")
-		log.Log("msg", "incoming request for: ", offeringID)
-		index := getOfferingIndex(offeringID, offerings)
+		log.Log("offeringID", offeringID, "msg", "incoming request")
+		index := getOfferingIndex(offeringID, offers)
 		if index == -1 { // we check if the path is valid, if not return 404
 			w.WriteHeader(404)
 			return
 		}
 
 		// then we try to call pipe
-		pipeURL := offerings[index].PipeURL
+		pipeURL := offers[index].PipeURL
 		pipeJSON, err := pipes.MakeRequest(pipeURL, config.PipeAccessToken)
 		if err != nil {
+			log.Log("error", err)
 			w.WriteHeader(500)
 			return
 		}
 
 		// now we reformat our json to their json
-		bigiotJSON, err := ConvertJSON(pipeJSON, offerings[index])
+		bigiotJSON, err := ConvertJSON(pipeJSON, offers[index])
 		if err != nil {
+			log.Log("error", err)
 			w.WriteHeader(500)
 			return
 		}
 
 		w.Header().Set("Content-Type", "application/json")
 		if _, err := io.WriteString(w, string(bigiotJSON)); err != nil {
-			log.Log(err)
+			log.Log("error", err)
 		}
 	})
 
-	log.Fatal("Fatal", http.ListenAndServe(fmt.Sprintf(":%d", config.HTTPPort), mux))
+	srv := &http.Server{Addr: fmt.Sprintf(":%d", config.HTTPPort), Handler: mux}
+
+	go func() {
+
+		log.Log("msg listening on port:", config.HTTPPort)
+		if err := srv.ListenAndServe(); err != nil {
+			log.Log("port", config.HTTPPort, "msg", "listening")
+		} else {
+			log.Fatal(err)
+		}
+
+	}()
+
+	<-stop
+
+	log.Log("msg", "shutting down, removing offerings")
+
+	// range over offerings and remove them all from marketplace
+	for _, o := range offerings {
+		deleteOffering := &bigiot.DeleteOffering{
+			ID: o.ID,
+		}
+
+		err = provider.DeleteOffering(context.Background(), deleteOffering)
+		if err != nil {
+			return err
+		}
+	}
+
+	srv.Shutdown(context.Background())
 
 	return nil
+
 }
 
 func addCommonOutputToOfferings(o []Offer) {
@@ -141,7 +187,15 @@ func authenticateProvider(id, secret, uri string) (*bigiot.Provider, error) {
 	return provider, err
 }
 
-func makeOffering(o Offer, host string, port string, offeringActiveLengthSec time.Duration) *bigiot.OfferingDescription {
+func makeOfferingInput(o Offer, host string, offeringActiveLengthSec time.Duration) *bigiot.OfferingDescription {
+	var princingModel bigiot.PricingModel
+
+	if o.Price > 0 {
+		princingModel = bigiot.PerAccess
+	} else {
+		princingModel = bigiot.Free
+	}
+
 	addOfferingInput := &bigiot.OfferingDescription{
 		LocalID: o.ID,
 		Name:    o.Name,
@@ -162,7 +216,7 @@ func makeOffering(o Offer, host string, port string, offeringActiveLengthSec tim
 		},
 		Endpoints: []bigiot.Endpoint{
 			{
-				URI:                 fmt.Sprintf("http://%s:%s/offering/%s", host, port, strings.ToLower(o.ID)),
+				URI:                 fmt.Sprintf("http://%s/offering/%s", host, strings.ToLower(o.ID)),
 				EndpointType:        bigiot.HTTPGet,
 				AccessInterfaceType: bigiot.BIGIoTLib,
 			},
@@ -173,10 +227,10 @@ func makeOffering(o Offer, host string, port string, offeringActiveLengthSec tim
 		},
 		Price: bigiot.Price{
 			Money: bigiot.Money{
-				Amount:   0,
+				Amount:   o.Price,
 				Currency: bigiot.EUR,
 			},
-			PricingModel: bigiot.Free,
+			PricingModel: princingModel,
 		},
 		Activation: bigiot.Activation{
 			Status:         true,
@@ -199,14 +253,12 @@ func offeringCheck(
 	offering Offer,
 	provider *bigiot.Provider,
 	host string,
-	port string,
 	pipeAccessToken string,
 	offeringCheckIntervalSec time.Duration) error {
 
 	ticker := time.NewTicker(time.Second * offeringCheckIntervalSec)
 	for range ticker.C {
-		//log.Log("debug", "", "now we check for offering:", offering.Name, "pipeURL", offering.PipeURL)
-		//log.Log("pipeAccessToken", pipeAccessToken)
+
 		bytes, err := pipes.MakeRequest(offering.PipeURL+"?limit=1", pipeAccessToken)
 		if err != nil {
 			return err
@@ -223,13 +275,11 @@ func offeringCheck(
 		if len(j) == 1 {
 			//Debug
 			//log.Log("msg", "pipe for offering: ", offering.Name, " return 1 result, re-registering offering:")
-			off := makeOffering(offering, host, port, offeringCheckIntervalSec)
-			_, err = provider.RegisterOffering(context.Background(), off)
+			offeringDescription := makeOfferingInput(offering, host, offeringCheckIntervalSec)
+			_, err = provider.RegisterOffering(context.Background(), offeringDescription)
 			if err != nil {
 				return err
 			}
-			//Debug
-			//log.Log("msg", " COMPLETED")
 
 		} else {
 			// delete offering from marketplace
@@ -242,7 +292,6 @@ func offeringCheck(
 			if err != nil {
 				return err
 			}
-			//log.Log("msg", " COMPLETED")
 		}
 	}
 	return nil

@@ -7,12 +7,13 @@ type Output struct {
 }
 
 type Offer struct {
-	ID          string // id of offering, no space
-	Name        string // name of offering, wiht space
-	City        string // name of city
-	PipeURL     string // url of thingful pipe
-	Category    string // big-iot ontology represent categoty of this offering
-	Datalicense string // big-iot datalicense
+	ID          string  // id of offering, no space
+	Name        string  // name of offering, wiht space
+	City        string  // name of city
+	PipeURL     string  // url of thingful pipe
+	Category    string  // big-iot ontology represent categoty of this offering
+	Datalicense string  // big-iot datalicense
+	Price       float64 // price in cents
 	Outputs     []Output
 }
 

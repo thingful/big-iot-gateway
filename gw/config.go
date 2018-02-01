@@ -15,11 +15,12 @@ type Config struct {
 	ProviderSecret           string        // Needed to login into Marketplace
 	OfferingActiveLengthSec  time.Duration // timeout
 	OfferingCheckIntervalSec time.Duration // Offering Check interval
-	OfferingEndPoint         string        // not used yet
-	PipeAccessToken          string        // Token to access pipes
-	HTTPPort                 int           // GW port
-	HTTPHost                 string        // GW Host
-	Debug                    bool          // Debug Flag
+	OfferingEndPoint         string
+	PipeAccessToken          string // Token to access pipes
+	HTTPPort                 int    // GW port
+	HTTPHost                 string // GW Host
+	Debug                    bool   // Debug Flag
+	NoAuth                   bool   // disable auth flag
 }
 
 // NewConfig return a new Config
@@ -59,19 +60,24 @@ func (c *Config) Load(conf map[string]interface{}) error {
 	if val, ok := conf["offeringendpoint"]; ok {
 		c.OfferingEndPoint = cast.ToString(val)
 	} else {
-		return errors.New("offeringEndpoint is not set")
+		return errors.New("offeringserver is not set")
 	}
 	if val, ok := conf["pipeaccesstoken"]; ok {
 		c.PipeAccessToken = cast.ToString(val)
 	} else {
 		return errors.New("pipeAccessToken is not set")
 	}
-	if val, ok := conf["PORT"]; ok {
+	if val, ok := conf["httpport"]; ok && cast.ToInt(val) != 0 {
 		c.HTTPPort = cast.ToInt(val)
 	} else {
+		// if it's running in heroku
 		c.HTTPPort = cast.ToInt(os.Getenv("PORT"))
-		//return errors.New("PORT is not set")
+		//fmt.Println("PORT=", cast.ToInt(os.Getenv("PORT")))
 	}
+	if c.HTTPPort == 0 {
+		return errors.New("httpport/PORT is not set")
+	}
+
 	if val, ok := conf["httphost"]; ok {
 		c.HTTPHost = cast.ToString(val)
 	} else {
@@ -79,6 +85,9 @@ func (c *Config) Load(conf map[string]interface{}) error {
 	}
 	if val, ok := conf["debug"]; ok {
 		c.Debug = cast.ToBool(val)
+	}
+	if val, ok := conf["noauth"]; ok {
+		c.NoAuth = cast.ToBool(val)
 	}
 	return nil
 }

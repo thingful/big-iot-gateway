@@ -47,9 +47,10 @@ func init() {
 	RootCmd.PersistentFlags().Int("offeringCheckIntervalSec", 10, "Offering Check Interval in secs")
 	RootCmd.PersistentFlags().String("offeringEndpoint", "", "Offering End Point")
 	RootCmd.PersistentFlags().String("pipeAccessToken", "", "Pipes access token")
-	RootCmd.PersistentFlags().Int("HTTPPort", 8080, "HTTP Port where will be running the service")
+	RootCmd.PersistentFlags().Int("HTTPPort", 0, "HTTP Port where will be running the service")
 	RootCmd.PersistentFlags().String("HTTPHost", "localhost", "HTTP Hostname where will be running the service")
 	RootCmd.PersistentFlags().Bool("debug", false, "enable debug")
+	RootCmd.PersistentFlags().Bool("noauth", false, "disable auth")
 
 	viper.BindPFlag("marketPlaceURI", RootCmd.PersistentFlags().Lookup("marketPlaceURI"))
 	viper.BindPFlag("providerID", RootCmd.PersistentFlags().Lookup("providerID"))
@@ -61,6 +62,7 @@ func init() {
 	viper.BindPFlag("HTTPPort", RootCmd.PersistentFlags().Lookup("HTTPPort"))
 	viper.BindPFlag("HTTPHost", RootCmd.PersistentFlags().Lookup("HTTPHost"))
 	viper.BindPFlag("debug", RootCmd.PersistentFlags().Lookup("debug"))
+	viper.BindPFlag("noauth", RootCmd.PersistentFlags().Lookup("noauth"))
 
 }
 
