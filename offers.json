@@ -7,6 +7,7 @@
         "PipeURL": "https://thingful-pipes.herokuapp.com/api/run/8ced53ba-284a-4a5a-87ca-d67fa3629520",
         "Category": "http://schema.org/environmental",
         "Datalicense": "CCBySAV4URL",
+        "Price": 0,
         "Outputs": [
           {
             "BigiotName": "airTemperatureValue",
@@ -22,6 +23,7 @@
         "PipeURL": "https://thingful-pipes.herokuapp.com/api/run/39429ddb-f42c-485e-bf49-232b7675b61c",
         "Category": "http://schema.org/environmental",
         "Datalicense": "CCBySAV4URL",
+        "Price": 0,
         "Outputs": [
           {
             "BigiotName": "airHumidityValue",
@@ -37,6 +39,7 @@
         "PipeURL": "https://thingful-pipes.herokuapp.com/api/run/3f26383d-7336-45ed-af0b-4e6997d9c551",
         "Category": "http://schema.big-iot.org/mobility",
         "Datalicense": "IODLV2URL",
+        "Price": 0,
         "Outputs": [
           {
             "BigiotName": "SpeedAverage",
@@ -52,6 +55,7 @@
         "PipeURL": "https://thingful-pipes.herokuapp.com/api/run/d3f0a0a5-03b9-43a1-a32a-e29605ee7d4c",
         "Category": "http://schema.org/totalCapacity",
         "Datalicense": "IODLV2URL",
+        "Price": 0,
         "Outputs": [
           {
             "BigiotName": "totalCapacity",
@@ -67,6 +71,7 @@
         "PipeURL": "https://thingful-pipes.herokuapp.com/api/run/b3c98aa7-4107-4ba6-8a0a-15a43a17ae97",
         "Category": "http://schema.org/parkingNumberOfVacantSpaces ",
         "Datalicense": "IODLV2URL",
+        "Price": 0,
         "Outputs": [
           {
             "BigiotName": "numberOfVacantParkingSpaces",

@@ -16,4 +16,9 @@ EXPOSE 8080
 COPY --from=builder /go/src/github.com/thingful/big-iot-gateway/build/big-iot-gateway /app/
 ADD ./config.yaml /app/
 ADD ./offers.json /app/
-CMD /app/big-iot-gateway start --config config.yaml --providerID=Thingful_test-Thingful_test_provider --providerSecret=ZoGeUUfnShyDZSasrlF-Rw== --pipeAccessToken=b9a99462-a031-41aa-aa21-8aacd738085a
+CMD /app/big-iot-gateway start \
+    --config config.yaml\
+    --providerID=Thingful_test-Thingful_test_provider\ 
+    --providerSecret=ZoGeUUfnShyDZSasrlF-Rw==\ 
+    --pipeAccessToken=b9a99462-a031-41aa-aa21-8aacd738085a\
+    --offeringEndpoint=https://big-iot-gw.herokuapp.com/

@@ -1,9 +1,3 @@
 marketPlaceURI: https://market.big-iot.org
 
-#NOT USED
 offeringEndpoint: big-iot-gw.herokuapp.com
-
-
-httpHost: 
-
-httpPort: 8080
