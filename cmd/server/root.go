@@ -2,7 +2,6 @@ package main
 
 import (
 	"os"
-	"os/signal"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
@@ -15,17 +14,11 @@ var (
 	cfgFile   string
 	offerFile string
 	offers    *viper.Viper
-	exitChan  chan os.Signal // used for trap ctrl+c signal
 )
 
 var RootCmd = &cobra.Command{
 	Use:   "big-iot-gw",
 	Short: "BIG-IoT gateway",
-	PersistentPreRun: func(cmd *cobra.Command, args []string) {
-		// Trap interrupt signal
-		exitChan = make(chan os.Signal, 1)
-		signal.Notify(exitChan, os.Interrupt)
-	},
 }
 
 func Execute() {

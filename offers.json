@@ -69,7 +69,7 @@
         "Name": "Torino Parking Number of Vacant Spaces",
         "City": "Torino",
         "PipeURL": "https://thingful-pipes.herokuapp.com/api/run/b3c98aa7-4107-4ba6-8a0a-15a43a17ae97",
-        "Category": "bigiot:Parking ",
+        "Category": "bigiot:Parking",
         "Datalicense": "IODLV2URL",
         "Price": 0,
         "Outputs": [
