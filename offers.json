@@ -1,8 +1,8 @@
 {
     "offers": [
       {
-        "ID": "torino-weather",
-        "Name": "Torino Weather",
+        "ID": "torino-weather-temperature",
+        "Name": "Torino Weather Temperature",
         "City": "Torino",
         "PipeURL": "https://thingful-pipes.herokuapp.com/api/run/8ced53ba-284a-4a5a-87ca-d67fa3629520",
         "Category": "http://schema.org/environmental",
@@ -18,7 +18,7 @@
       },
       {
         "ID": "torino-weather-humidity",
-        "Name": "Torino Weather",
+        "Name": "Torino Weather Humidity",
         "City": "Torino",
         "PipeURL": "https://thingful-pipes.herokuapp.com/api/run/39429ddb-f42c-485e-bf49-232b7675b61c",
         "Category": "http://schema.org/environmental",

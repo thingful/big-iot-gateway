@@ -21,4 +21,3 @@ CMD /app/big-iot-gateway start \
     --providerID=Thingful_test-Thingful_test_provider\ 
     --providerSecret=ZoGeUUfnShyDZSasrlF-Rw==\ 
     --pipeAccessToken=b9a99462-a031-41aa-aa21-8aacd738085a\
-    --offeringEndpoint=https://big-iot-gw.herokuapp.com/

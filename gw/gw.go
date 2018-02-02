@@ -67,7 +67,8 @@ func Start(config Config, offers []Offer) error {
 	offerings := []*bigiot.Offering{}
 
 	for _, o := range offers {
-		offeringDescription := makeOfferingInput(o, offeringEndpoint.Host, config.OfferingActiveLengthSec)
+		fmt.Println("Host:", offeringEndpoint.String())
+		offeringDescription := makeOfferingInput(o, offeringEndpoint.String(), config.OfferingActiveLengthSec)
 		offering, err := provider.RegisterOffering(context.Background(), offeringDescription)
 		if err != nil {
 			log.Log("msg", "Error Registering Offering:", err)
@@ -76,7 +77,7 @@ func Start(config Config, offers []Offer) error {
 		offerings = append(offerings, offering)
 
 		go func() {
-			err := offeringCheck(o, provider, config.OfferingEndPoint, config.PipeAccessToken, config.OfferingCheckIntervalSec)
+			err := offeringCheck(o, provider, offeringEndpoint.String(), config.PipeAccessToken, config.OfferingCheckIntervalSec)
 			log.Log("msg", "Error checking Offering:", "error", err)
 		}()
 	}
@@ -216,7 +217,7 @@ func makeOfferingInput(o Offer, host string, offeringActiveLengthSec time.Durati
 		},
 		Endpoints: []bigiot.Endpoint{
 			{
-				URI:                 fmt.Sprintf("http://%s/offering/%s", host, strings.ToLower(o.ID)),
+				URI:                 fmt.Sprintf("%s/offering/%s", host, strings.ToLower(o.ID)),
 				EndpointType:        bigiot.HTTPGet,
 				AccessInterfaceType: bigiot.BIGIoTLib,
 			},
