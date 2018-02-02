@@ -9,22 +9,23 @@ import (
 var startCmd = &cobra.Command{
 	Use:   "start",
 	Short: "Start BIG-IoT Gateway",
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
 
 		config := gw.NewConfig()
 		err := config.Load(viper.AllSettings())
 		if err != nil {
-			panic(err)
+			return err
 		}
 
 		offerings := gw.OfferConf{}
 		if err = offers.Unmarshal(&offerings); err != nil {
-			panic(err)
+			return err
 		}
 
 		if err = gw.Start(config, offerings.Offers); err != nil {
-			panic(err)
+			return err
 		}
+		return nil
 	},
 }
 

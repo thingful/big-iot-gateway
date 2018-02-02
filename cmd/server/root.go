@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"os"
 
 	"github.com/spf13/cobra"
@@ -92,11 +93,12 @@ func initConfig() {
 
 }
 
-func bindViper(flags *pflag.FlagSet, names ...string) {
+func bindViper(flags *pflag.FlagSet, names ...string) error {
 	for _, name := range names {
 		err := viper.BindPFlag(name, flags.Lookup(name))
 		if err != nil {
-			panic("Error trying to bind:" + name + " " + err.Error())
+			return fmt.Errorf("Error trying to bind flags: %s", err.Error())
 		}
 	}
+	return nil
 }
