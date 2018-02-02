@@ -54,7 +54,7 @@ func (a *auth) Handler(next http.Handler) http.Handler {
 		log.Log("debug-offeringID", offeringID)
 
 		if idParts[2] != offeringID {
-			log.Log("tokenID", idParts[2], "requestedID", offeringID, "error", "token id does not match reqeusted")
+			log.Log("tokenID", idParts[2], "requestedID", offeringID, "error", "token id does not match requested")
 			http.Error(w, "Unauthorized", http.StatusUnauthorized)
 			return
 		}

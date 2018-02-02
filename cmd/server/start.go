@@ -22,10 +22,7 @@ var startCmd = &cobra.Command{
 			return err
 		}
 
-		if err = gw.Start(config, offerings.Offers); err != nil {
-			return err
-		}
-		return nil
+		return gw.Start(config, offerings.Offers)
 	},
 }
 

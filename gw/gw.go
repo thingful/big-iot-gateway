@@ -8,6 +8,8 @@ import (
 	"os"
 	"os/signal"
 
+	"github.com/spf13/cast"
+
 	"net/http"
 	"net/url"
 	"strings"
@@ -51,7 +53,7 @@ func Start(config Config, offers []Offer) error {
 	addCommonOutputToOfferings(offers)
 
 	if config.Debug {
-		log.Log("Settings", viper.AllSettings())
+		log.Log("settings", viper.AllSettings())
 	}
 
 	provider, err := authenticateProvider(config.ProviderID, config.ProviderSecret, config.MarketPlaceURI)
@@ -70,14 +72,14 @@ func Start(config Config, offers []Offer) error {
 		offeringDescription := makeOfferingInput(o, offeringEndpoint.String(), config.OfferingActiveLengthSec)
 		offering, err := provider.RegisterOffering(context.Background(), offeringDescription)
 		if err != nil {
-			log.Log("msg", "Error Registering Offering:", err)
+			log.Log("error", err)
 		}
 
 		offerings = append(offerings, offering)
 
 		go func() {
 			err := offeringCheck(o, provider, offeringEndpoint.String(), config.PipeAccessToken, config.OfferingCheckIntervalSec)
-			log.Log("msg", "Error checking Offering:", "error", err)
+			log.Log("error", err)
 		}()
 	}
 
@@ -130,14 +132,8 @@ func Start(config Config, offers []Offer) error {
 	srv := &http.Server{Addr: fmt.Sprintf(":%d", config.HTTPPort), Handler: mux}
 
 	go func() {
-
-		log.Log("msg listening on port:", config.HTTPPort)
-		if err := srv.ListenAndServe(); err != nil {
-			log.Log("port", config.HTTPPort, "msg", "listening")
-		} else {
-			log.Fatal(err)
-		}
-
+		log.Log("msg", "listening on port:"+cast.ToString(config.HTTPPort))
+		log.Fatal(srv.ListenAndServe())
 	}()
 
 	<-stop
@@ -283,7 +279,7 @@ func offeringCheck(
 
 		} else {
 			// delete offering from marketplace
-			log.Log("msg", offering.Name+" returns 0 result, deleting offering", offering.Name)
+			log.Log("msg", offering.Name+" returns 0 result, deleting offering :"+offering.Name)
 
 			deleteOfferingInput := &bigiot.DeleteOffering{
 				ID: offering.ID,

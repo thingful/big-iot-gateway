@@ -24,7 +24,7 @@ var RootCmd = &cobra.Command{
 
 func Execute() {
 	if err := RootCmd.Execute(); err != nil {
-		log.Log("msg", err)
+		log.Log("error", err)
 		os.Exit(1)
 	}
 }
@@ -75,7 +75,7 @@ func initConfig() {
 
 	// If a config file is found, read it in.
 	if err := viper.ReadInConfig(); err == nil {
-		log.Log("Using config file:", viper.ConfigFileUsed())
+		log.Log("msg", "Using config file:"+viper.ConfigFileUsed())
 	}
 
 	// Offerings file
