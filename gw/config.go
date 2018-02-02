@@ -70,9 +70,7 @@ func (c *Config) Load(conf map[string]interface{}) error {
 	if val, ok := conf["httpport"]; ok && cast.ToInt(val) != 0 {
 		c.HTTPPort = cast.ToInt(val)
 	} else {
-		// if it's running in heroku
 		c.HTTPPort = cast.ToInt(os.Getenv("PORT"))
-		//fmt.Println("PORT=", cast.ToInt(os.Getenv("PORT")))
 	}
 	if c.HTTPPort == 0 {
 		return errors.New("httpport/PORT is not set")
