@@ -67,7 +67,6 @@ func Start(config Config, offers []Offer) error {
 	offerings := []*bigiot.Offering{}
 
 	for _, o := range offers {
-		fmt.Println("Host:", offeringEndpoint.String())
 		offeringDescription := makeOfferingInput(o, offeringEndpoint.String(), config.OfferingActiveLengthSec)
 		offering, err := provider.RegisterOffering(context.Background(), offeringDescription)
 		if err != nil {
