@@ -2,12 +2,18 @@ SOURCE_VERSION = $(shell git describe --tags --always --dirty --abbrev=6)
 EXECUTABLE = big-iot-gateway
 BUILD_DIR = build
 GOBUILD = go build
-#BUILDFLAGS = -v -ldflags "-linkmode external -extldflags -static"
-BUILDFLAGS = -v -x
 PACKAGE = .
 SRC_TARGET = ./cmd/server
 OK_CMD = echo "\033[92mDone! "
 ERR_CMD = echo "\033[91mError! "
+
+UNAME := $(shell uname)
+ifeq ($(UNAME), Linux)
+	BUILDFLAGS = -v -x -ldflags "-linkmode external -extldflags -static"
+endif
+ifeq ($(UNAME), Darwin)
+	BUILDFLAGS = -v -x
+endif
 
 default: help
 
