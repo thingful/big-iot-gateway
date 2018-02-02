@@ -8,8 +8,6 @@ import (
 	"os"
 	"os/signal"
 
-	"github.com/spf13/cast"
-
 	"net/http"
 	"net/url"
 	"strings"
@@ -132,7 +130,7 @@ func Start(config Config, offers []Offer) error {
 	srv := &http.Server{Addr: fmt.Sprintf(":%d", config.HTTPPort), Handler: mux}
 
 	go func() {
-		log.Log("msg", "listening on port:"+cast.ToString(config.HTTPPort))
+		log.Log("port", config.HTTPPort, "msg", "starting server")
 		log.Fatal(srv.ListenAndServe())
 	}()
 
