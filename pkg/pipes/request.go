@@ -1,6 +1,8 @@
 package pipes
 
 import (
+	"errors"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 )
@@ -17,7 +19,10 @@ func MakeRequest(url string, token string) ([]byte, error) {
 
 	req.Header.Add("Authorization", "Bearer "+token)
 	resp, err := client.Do(req)
-	if err != nil {
+	if err != nil || resp.StatusCode != 200 {
+		if err == nil {
+			err = errors.New(fmt.Sprintf("Status Code: %d received", resp.StatusCode))
+		}
 		return nil, err
 	}
 
