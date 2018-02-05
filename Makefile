@@ -40,6 +40,11 @@ run: ## Run binary on docker container
 release: ## Create target container with the release version of the app
 	docker build --force-rm -t thingful/pomelo:$(SOURCE_VERSION) -t thingful/big-iot-gateway:$(SOURCE_VERSION) .
 
+.PHONY: deploy-heroku
+deploy-heroku: ## Build Container and deploys it into heroku
+	docker build -t big-iot-gw .
+	heroku container:push web --app big-iot-gw 
+
 .PHONY: clean
 clean: ## Remove all generated artefacts
 	rm -rf ./build
