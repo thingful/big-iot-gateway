@@ -14,4 +14,7 @@ RUN apk --no-cache add \
 WORKDIR /app
 EXPOSE 8080
 COPY --from=builder /go/src/github.com/thingful/big-iot-gateway/build/big-iot-gateway /app/
-RUN /app/big-iot-gateway
+ADD ./config.yaml /app/
+ADD ./offers.json /app/
+CMD /app/big-iot-gateway start \
+    --config config.yaml\
