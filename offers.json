@@ -79,6 +79,118 @@
             "PipeTerm": "number of vacant parking spaces"
           }
         ]
-      }      
+      },
+      {
+        "ID": "barcelona-env-wind-speed",
+        "Name": "Barcelona Wind Speed",
+        "City": "Barcelona",
+        "PipeURL": "https://thingful-pipes.herokuapp.com/api/run/3ba76bd1-2e69-4dc1-92bd-5a108e72a433",
+        "Category": "bigiot:environmental",
+        "Datalicense": "https://api.thingful.net/providers/smartcitizen",
+        "Price": 0,
+        "Outputs": [
+          {
+            "BigiotName": "windSpeedValue",
+            "BigiotRDF": "schema:windSpeedValue",
+            "PipeTerm": "windVelocity,WindSpeed"
+          }
+        ]
+      },
+      {
+        "ID": "barcelona-env-wind-direction",
+        "Name": "Barcelona Wind Direction",
+        "City": "Barcelona",
+        "PipeURL": "https://thingful-pipes.herokuapp.com/api/run/582de2bb-aa7b-48db-830b-835f1e74d21f",
+        "Category": "bigiot:environmental",
+        "Datalicense": "https://api.thingful.net/providers/smartcitizen",
+        "Price": 0,
+        "Outputs": [
+          {
+            "BigiotName": "windDirectionValue",
+            "BigiotRDF": "schema:windDirectionValue",
+            "PipeTerm": "windDirection"
+          }
+        ]
+      },
+      {
+        "ID": "barcelona-air-quality-co",
+        "Name": "Barcelona Air Quality CO Concentration",
+        "City": "Barcelona",
+        "PipeURL": "https://thingful-pipes.herokuapp.com/api/run/2af0ad7a-ce36-476c-999e-c0743ddd56b7",
+        "Category": "bigiot:environmental",
+        "Datalicense": "https://api.thingful.net/providers/smartcitizen",
+        "Price": 0,
+        "Outputs": [
+          {
+            "BigiotName": "ChemicalAgentAtmosphericConcentrationCO",
+            "BigiotRDF": "schema:hasCO_concentration",
+            "PipeTerm": "carbonMonoxide(CO)ChemicalAgentAtmosphericConcentration"
+          }
+        ]
+      },
+      {
+        "ID": "barcelona-env-humidity",
+        "Name": "Barcelona Relative Humidity",
+        "City": "Barcelona",
+        "PipeURL": "https://thingful-pipes.herokuapp.com/api/run/39353d33-9dce-4fa4-91dc-3f6fbff7a234",
+        "Category": "bigiot:environmental",
+        "Datalicense": "https://api.thingful.net/providers/smartcitizen",
+        "Price": 0,
+        "Outputs": [
+          {
+            "BigiotName": "Humidity",
+            "BigiotRDF": "schema:airHumidityValue",
+            "PipeTerm": "relativeHumidity"
+          }
+        ]
+      },
+      {
+        "ID": "barcelona-air-quality-no2",
+        "Name": "Barcelona Air Quality NO2 Concentration",
+        "City": "Barcelona",
+        "PipeURL": "https://thingful-pipes.herokuapp.comapi/run/a81790a7-a8f8-46d5-9627-0b4e7358b30e",
+        "Category": "bigiot:environmental",
+        "Datalicense": "https://api.thingful.net/providers/smartcitizen",
+        "Price": 0,
+        "Outputs": [
+          {
+            "BigiotName": "air_qualityNO2",
+            "BigiotRDF": "schema:hasN2O_concentration",
+            "PipeTerm": "nO2ChemicalAgentAtmosphericConcentration"
+          }
+        ]
+      },
+      {
+        "ID": "barcelona-air-temperature",
+        "Name": "Barcelona Air Temperature",
+        "City": "Barcelona",
+        "PipeURL": "https://thingful-pipes.herokuapp.com/api/run/e44f4430-8c19-483b-95e0-c255f0550d77",
+        "Category": "bigiot:environmental",
+        "Datalicense": "https://api.thingful.net/providers/smartcitizen",
+        "Price": 0,
+        "Outputs": [
+          {
+            "BigiotName": "airTemperatureValue",
+            "BigiotRDF": "schema:airTemperatureValue",
+            "PipeTerm": "temperature"
+          }
+        ]
+      },
+      {
+        "ID": "barcelona-noise-level",
+        "Name": "Barcelona Noise Level",
+        "City": "Barcelona",
+        "PipeURL": "https://thingful-pipes.herokuapp.com/api/run/d85965a5-7437-4adf-9562-54dba76b01aa",
+        "Category": "bigiot:environmental",
+        "Datalicense": "https://api.thingful.net/providers/smartcitizen",
+        "Price": 0,
+        "Outputs": [
+          {
+            "BigiotName": "air_qualityPM10",
+            "BigiotRDF": "schema:hasNoiseLevel",
+            "PipeTerm": "sound,NoiseLevel"
+          }
+        ]
+      }         
     ]
   }

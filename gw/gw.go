@@ -67,10 +67,11 @@ func Start(config Config, offers []Offer) error {
 	offerings := []*bigiot.Offering{}
 
 	for _, o := range offers {
+
 		offeringDescription := makeOfferingInput(o, offeringEndpoint.String(), config.OfferingActiveLengthSec)
 		offering, err := provider.RegisterOffering(context.Background(), offeringDescription)
 		if err != nil {
-			log.Log("error", err)
+			log.Log("error", err, "offer", o.Name)
 		}
 
 		offerings = append(offerings, offering)
@@ -268,7 +269,7 @@ func offeringCheck(
 		j := m.([]interface{}) //type case to slice first
 		if len(j) == 1 {
 			//Debug
-			//log.Log("msg", "pipe for offering: ", offering.Name, " return 1 result, re-registering offering:")
+			log.Log("msg", "pipe for offering: ", offering.Name, " return 1 result, re-registering offering:")
 			offeringDescription := makeOfferingInput(offering, host, offeringCheckIntervalSec)
 			_, err = provider.RegisterOffering(context.Background(), offeringDescription)
 			if err != nil {
