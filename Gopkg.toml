@@ -27,7 +27,7 @@
 
 [[constraint]]
   name = "github.com/thingful/bigiot"
-  version = "0.0.4"
+  version = "0.10.1"
 
 [[constraint]]
   name = "goji.io"
