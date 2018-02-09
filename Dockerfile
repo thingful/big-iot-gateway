@@ -18,3 +18,4 @@ ADD ./config.yaml /app/
 ADD ./offers.json /app/
 CMD /app/big-iot-gateway start \
     --config config.yaml\
+    --offerFile s3://big-iot-gw/offers.json
