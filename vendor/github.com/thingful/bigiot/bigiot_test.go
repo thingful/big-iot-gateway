@@ -24,21 +24,9 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/thingful/bigiot"
+	"github.com/thingful/bigiot/mocks"
 	"github.com/thingful/simular"
 )
-
-// mockClock is an implementation of the Clock interface for use in tests.
-// Returns a canned time for "now".
-type mockClock struct {
-	t time.Time
-}
-
-// Now is our implementation of the Clock Now() function that in the real case
-// returns the current time, but here we just return the canned time value set
-// on the struct.
-func (m mockClock) Now() time.Time {
-	return m.t
-}
 
 func TestRegisterOffering(t *testing.T) {
 	simular.Activate()
@@ -57,7 +45,7 @@ func TestRegisterOffering(t *testing.T) {
 			"https://market.big-iot.org/graphql",
 			simular.NewStringResponder(200, `{"data": {"addOffering": {"id": "Organization-Provider-TestOffering", "activation": { "status": true, "expirationTime": 1509983101577}}}}`),
 			simular.WithBody(
-				bytes.NewBufferString(`{"query":"mutation addOffering { addOffering ( input: { id: \"Provider\", localId: \"TestOffering\", name: \"Test Offering\", activation: {status: true, expirationTime: 1509983101577} , rdfUri: \"\", inputData: [], outputData: [{name: \"value\", rdfUri: \"schema:random\"} ], endpoints: [{uri: \"https://example.com/random\", endpointType: HTTP_GET, accessInterfaceType: BIGIOT_LIB} ], license: OPEN_DATA_LICENSE, price: {money: {amount: 0.001, currency: EUR}, pricingModel: PER_ACCESS}, extent: {city: \"Berlin\"} } ) { id name activation { status expirationTime } } }"}`),
+				bytes.NewBufferString(`{"query":"mutation addOffering { addOffering ( input: { id: \"Provider\", localId: \"TestOffering\", name: \"Test Offering\", activation: { status: true, expirationTime: 1509983101577 }, rdfUri: \"urn:proposed:RandomValues\", outputs: [{ name: \"value\", rdfUri: \"schema:random\" }], endpoints: [{ uri: \"https://example.com/random\", endpointType: HTTP_GET, accessInterfaceType: BIGIOT_LIB }], license: OPEN_DATA_LICENSE, price: { money: { amount: 0.001, currency: EUR }, pricingModel: PER_ACCESS }, spatialExtent: { city: \"Berlin\", boundary: { l1: { lng: -2.25, lat: 54.53 }, l2: { lng: -2.26, lat: 54.96 } } } } ) { id name activation { status expirationTime } } }"}`),
 			),
 		),
 	)
@@ -69,9 +57,10 @@ func TestRegisterOffering(t *testing.T) {
 	assert.Nil(t, err)
 
 	offeringInput := &bigiot.OfferingDescription{
-		LocalID: "TestOffering",
-		Name:    "Test Offering",
-		OutputData: []bigiot.DataField{
+		LocalID:  "TestOffering",
+		Name:     "Test Offering",
+		Category: "urn:proposed:RandomValues",
+		Outputs: []bigiot.DataField{
 			{
 				Name:   "value",
 				RdfURI: "schema:random",
@@ -92,10 +81,20 @@ func TestRegisterOffering(t *testing.T) {
 			},
 			PricingModel: bigiot.PerAccess,
 		},
-		Extent: bigiot.Address{
+		SpatialExtent: &bigiot.SpatialExtent{
 			City: "Berlin",
+			BoundingBox: &bigiot.BoundingBox{
+				Location1: bigiot.Location{
+					Lng: -2.25,
+					Lat: 54.53,
+				},
+				Location2: bigiot.Location{
+					Lng: -2.26,
+					Lat: 54.96,
+				},
+			},
 		},
-		Activation: bigiot.Activation{
+		Activation: &bigiot.Activation{
 			Status:         true,
 			Duration:       10 * time.Minute,
 			ExpirationTime: expirationTime,
@@ -116,12 +115,13 @@ func TestRegisterOfferingWithDuration(t *testing.T) {
 	now := time.Unix(0, 0)
 	duration := 10 * time.Minute
 	expirationTime := now.Add(duration)
-	clock := mockClock{t: now}
+	clock := mocks.Clock{T: now}
 
 	offeringInput := &bigiot.OfferingDescription{
-		LocalID: "TestOffering",
-		Name:    "Test Offering",
-		OutputData: []bigiot.DataField{
+		LocalID:  "TestOffering",
+		Name:     "Test Offering",
+		Category: "urn:proposed:RandomValues",
+		Outputs: []bigiot.DataField{
 			{
 				Name:   "value",
 				RdfURI: "schema:random",
@@ -142,10 +142,10 @@ func TestRegisterOfferingWithDuration(t *testing.T) {
 			},
 			PricingModel: bigiot.PerAccess,
 		},
-		Extent: bigiot.Address{
+		SpatialExtent: &bigiot.SpatialExtent{
 			City: "Berlin",
 		},
-		Activation: bigiot.Activation{
+		Activation: &bigiot.Activation{
 			Status:   true,
 			Duration: duration,
 		},
@@ -163,7 +163,7 @@ func TestRegisterOfferingWithDuration(t *testing.T) {
 				"https://market.big-iot.org/graphql",
 				simular.NewStringResponder(200, `{"data": {"addOffering": {"id": "Organization-Provider-TestOffering", "activation": { "status": true, "expirationTime": 600000}}}}`),
 				simular.WithBody(
-					bytes.NewBufferString(`{"query":"mutation addOffering { addOffering ( input: { id: \"Provider\", localId: \"TestOffering\", name: \"Test Offering\", activation: {status: true, expirationTime: 600000} , rdfUri: \"\", inputData: [], outputData: [{name: \"value\", rdfUri: \"schema:random\"} ], endpoints: [{uri: \"https://example.com/random\", endpointType: HTTP_GET, accessInterfaceType: BIGIOT_LIB} ], license: OPEN_DATA_LICENSE, price: {money: {amount: 0.001, currency: EUR}, pricingModel: PER_ACCESS}, extent: {city: \"Berlin\"} } ) { id name activation { status expirationTime } } }"}`),
+					bytes.NewBufferString(`{"query":"mutation addOffering { addOffering ( input: { id: \"Provider\", localId: \"TestOffering\", name: \"Test Offering\", activation: { status: true, expirationTime: 600000 }, rdfUri: \"urn:proposed:RandomValues\", outputs: [{ name: \"value\", rdfUri: \"schema:random\" }], endpoints: [{ uri: \"https://example.com/random\", endpointType: HTTP_GET, accessInterfaceType: BIGIOT_LIB }], license: OPEN_DATA_LICENSE, price: { money: { amount: 0.001, currency: EUR }, pricingModel: PER_ACCESS }, spatialExtent: { city: \"Berlin\" } } ) { id name activation { status expirationTime } } }"}`),
 				),
 			),
 		)
@@ -195,7 +195,7 @@ func TestRegisterOfferingWithDuration(t *testing.T) {
 			simular.NewStubRequest(
 				http.MethodPost,
 				"https://market.big-iot.org/graphql",
-				simular.NewStringResponder(500, `error`),
+				simular.NewStringResponder(400, `{"data":null,"errors":[{"message":"bad request"}]}`),
 				simular.WithBody(
 					bytes.NewBufferString(`{"query":"mutation addOffering { addOffering ( input: { id: \"Provider\", localId: \"TestOffering\", name: \"Test Offering\", activation: {status: true, expirationTime: 600000} , rdfUri: \"\", inputData: [], outputData: [{name: \"value\", rdfUri: \"schema:random\"} ], endpoints: [{uri: \"https://example.com/random\", endpointType: HTTP_GET, accessInterfaceType: BIGIOT_LIB} ], license: OPEN_DATA_LICENSE, price: {money: {amount: 0.001, currency: EUR}, pricingModel: PER_ACCESS}, extent: {city: \"Berlin\"} } ) { id name activation { status expirationTime } } }"}`),
 				),
@@ -214,6 +214,7 @@ func TestRegisterOfferingWithDuration(t *testing.T) {
 
 		_, err = provider.RegisterOffering(context.Background(), offeringInput)
 		assert.NotNil(t, err)
+		assert.Regexp(t, "Error registering offering", err.Error())
 	})
 
 	t.Run("with invalid json", func(t *testing.T) {
@@ -295,7 +296,7 @@ func TestDeleteOfferingError(t *testing.T) {
 		simular.NewStubRequest(
 			http.MethodPost,
 			"https://market.big-iot.org/graphql",
-			simular.NewStringResponder(500, `error`),
+			simular.NewStringResponder(400, `{"data":null,"errors":[{"message":"bad request"}]}`),
 			simular.WithBody(
 				bytes.NewBufferString(`{"query":"mutation deleteOffering { deleteOffering ( input: { id: \"Organization-Provider-TestOffering\" } ) { id } }"}`),
 			),
@@ -314,11 +315,12 @@ func TestDeleteOfferingError(t *testing.T) {
 
 	err = provider.DeleteOffering(context.Background(), deleteOffering)
 	assert.NotNil(t, err)
+	assert.Equal(t, "Error deleting offering: bad request", err.Error())
 }
 
 func TestActivatingOffering(t *testing.T) {
 	now := time.Now()
-	clock := mockClock{now}
+	clock := mocks.Clock{T: now}
 
 	simular.Activate()
 	defer simular.DeactivateAndReset()

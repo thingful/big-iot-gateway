@@ -1,3 +1,5 @@
+package mocks
+
 // Copyright 2017 Thingful Ltd.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,15 +14,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package bigiot
+import "time"
 
-// Error is used for unmarshalling error messages from the marketplace
-type Error struct {
-	Message string `json:"message"`
+// Clock is an implementation of the Clock interface for use in tests.
+// Returns a canned time for "now".
+type Clock struct {
+	T time.Time
 }
 
-// ErrorResponse is used to unmarshal the response from the marketplace in the
-// event of an error.
-type ErrorResponse struct {
-	Errors []Error `json:"errors"`
+// Now is our implementation of the Clock Now() function that in the real case
+// returns the current time, but here we just return the canned time value set
+// on the struct.
+func (c Clock) Now() time.Time {
+	return c.T
 }

@@ -123,4 +123,10 @@ The behavior is:
   }
 
 ```
+
+In order to use S3 based storage for the offers file, the next flags/env vars are needed:
+*  --aws_key=xxx or AWS_KEY env var
+*  --aws_secret=xxx or AWS_SECRET env var
+* --aws_region=xxx or AWS_REGION 
+
 Note: Is possible to use a YAML file for offers configuration but json format is prefered as is less strict.
