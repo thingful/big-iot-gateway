@@ -6,12 +6,13 @@ import (
 	"io/ioutil"
 	"net/http"
 
+	"github.com/aws/aws-sdk-go/aws/session"
+	"github.com/aws/aws-sdk-go/service/sns"
 	"github.com/thingful/big-iot-gateway/pkg/log"
 )
 
 const (
-	subConfirmType   = "SubscriptionConfirmation"
-	notificationType = "Notification"
+	subConfirmType = "SubscriptionConfirmation"
 )
 
 func subscribeHandler(w http.ResponseWriter, r *http.Request) {
@@ -47,4 +48,19 @@ func confirmSubscription(subscribeURL string) {
 	} else {
 		log.Log("msg", fmt.Sprintf("Subscription Confirmed:%d", resp.StatusCode))
 	}
+}
+
+func subscribe(endPoint, proto, topicARN string, sess *session.Session) error {
+	input := &sns.SubscribeInput{
+		Endpoint: &endPoint,
+		Protocol: &proto,
+		TopicArn: &topicARN,
+	}
+	svc := sns.New(sess)
+	output, err := svc.Subscribe(input)
+	if err != nil {
+		return err
+	}
+	log.Log("debug", *output.SubscriptionArn)
+	return nil
 }
