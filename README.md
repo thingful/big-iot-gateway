@@ -70,4 +70,57 @@ Will run **without consider the config file at all** and  must be required to sp
 
 
 
-## 
+## Offers file
+
+`--offerFile` flag specify a file with the offers that the gateway need to serve, if the flag and file aren't specified then a default file 'offers.json' will be used, the content of the file are the Big IoT data offers.
+
+The behavior is:
+
+* ``No offers file`` -> The gateway will look for a local `./offers.json` file
+
+* ``--offerFile=s3://mybucket/myfile.json`` -> The gateway will look for aws credentials flags or env vars to connect to AWS S3 `mybucket` and the offers file file `myfile.json`
+
+* ``--offerFile=file://config/offers.json`` -> The gateway will look for the local file `./config/offers.json`
+
+### Example Format
+
+```
+{
+    "offers": [
+      {
+        "ID": "offer-id-1",
+        "Name": "Name of the offer 1",
+        "City": "My City",
+        "PipeURL": "https://valid-url-pointing-to-thingful-pipes-data-provider",
+        "Category": "bigiot:environmental",
+        "Datalicense": "myLicense",
+        "Price": 0,
+        "Outputs": [
+          {
+            "BigiotName": "airTemperatureValue",
+            "BigiotRDF": "schema:airTemperatureValue",
+            "PipeTerm": "temperature"
+          }
+        ]
+      },
+      {
+        "ID": "offer-id-1",
+        "Name": "Name of the offer 2",
+        "City": "Barcelona",
+        "PipeURL": "https://valid-url-pointing-to-thingful-pipes-data-provider",
+        "Category": "bigiot:environmental",
+        "Datalicense": "MyLicense",
+        "Price": 0,
+        "Outputs": [
+          {
+            "BigiotName": "air_qualityPM10",
+            "BigiotRDF": "schema:hasNoiseLevel",
+            "PipeTerm": "sound,NoiseLevel"
+          }
+        ]
+      }         
+    ]
+  }
+
+```
+Note: Is possible to use a YAML file for offers configuration but json format is prefered as is less strict.
