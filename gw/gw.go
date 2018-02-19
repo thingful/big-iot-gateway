@@ -75,7 +75,9 @@ func Start(config Config, offers []Offer) error {
 		}
 
 		offerings = append(offerings, offering)
-
+		if config.Debug {
+			log.Log("debug", fmt.Sprintf("Offer[%s]:%s registered", offering.ID, o.Name))
+		}
 		go func() {
 			err := offeringCheck(o, provider, offeringEndpoint.String(), config.PipeAccessToken, config.OfferingCheckIntervalSec)
 			log.Log("error", err)
@@ -83,6 +85,8 @@ func Start(config Config, offers []Offer) error {
 	}
 
 	mux := goji.NewMux()
+
+	mux.HandleFunc(pat.Get("/sns"), subscribeHandler)
 
 	mux.HandleFunc(pat.Get("/pulse"), pulse)
 	if !config.NoAuth {
@@ -144,7 +148,9 @@ func Start(config Config, offers []Offer) error {
 		deleteOffering := &bigiot.DeleteOffering{
 			ID: o.ID,
 		}
-
+		if config.Debug {
+			log.Log("debug", fmt.Sprintf("Deregistering Offer [%s] %s", o.ID, o.Name))
+		}
 		err = provider.DeleteOffering(context.Background(), deleteOffering)
 		if err != nil {
 			return err
