@@ -9,7 +9,7 @@ import (
 // MakeRequest calls at url using token for Authentication
 func MakeRequest(url string, token string) ([]byte, error) {
 	client := resty.New()
-	client.SetAuthToken(token)
+	client.SetHeader("Thingful-Authorization", "Bearer "+token)
 	resp, err := client.R().Get(url)
 	if err != nil || resp.StatusCode() != 200 {
 		if err == nil {
