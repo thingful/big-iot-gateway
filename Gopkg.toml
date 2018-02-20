@@ -36,3 +36,7 @@
 [[constraint]]
   name = "github.com/go-kit/kit"
   version = "0.6.0"
+
+[[constraint]]
+  branch = "master"
+  name = "googlemaps.github.io/maps"

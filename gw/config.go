@@ -17,6 +17,7 @@ type Config struct {
 	OfferingCheckIntervalSec time.Duration // Offering Check interval
 	OfferingEndPoint         string
 	PipeAccessToken          string // Token to access pipes
+	MapsKey                  string // Token to access Google maps geocoding API
 	HTTPPort                 int    // GW port
 	HTTPHost                 string // GW Host
 	Debug                    bool   // Debug Flag
@@ -66,6 +67,12 @@ func (c *Config) Load(conf map[string]interface{}) error {
 		c.PipeAccessToken = cast.ToString(val)
 	} else {
 		return errors.New("pipeAccessToken is not set")
+	}
+
+	if val, ok := conf["mapskey"]; ok {
+		c.MapsKey = cast.ToString(val)
+	} else {
+		return errors.New("mapsKey is not set")
 	}
 	if val, ok := conf["httpport"]; ok && cast.ToInt(val) != 0 {
 		c.HTTPPort = cast.ToInt(val)
