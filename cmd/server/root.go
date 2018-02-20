@@ -42,7 +42,7 @@ func init() {
 	cobra.OnInitialize(initConfig)
 
 	RootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "Config file (default is ./config.yaml)")
-	RootCmd.PersistentFlags().StringVar(&offerFile, "offerFile", "", "Config file with offerings (default is ./offerings.yaml)")
+	RootCmd.PersistentFlags().StringVar(&offerFile, "offerFile", "", "Config file with offerings (default is ./offers.json)")
 
 	// for remote offers config
 	awsCreds = &AwsCreds{}
