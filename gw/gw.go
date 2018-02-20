@@ -105,10 +105,10 @@ func Start(config Config, offers []Offer) error {
 
 		offerings = append(offerings, offering)
 
-		go func() {
-			err := offeringCheck(o, provider, offeringEndpoint.String(), config.PipeAccessToken, config.OfferingCheckIntervalSec)
+		go func(off Offer) {
+			err := offeringCheck(off, provider, offeringEndpoint.String(), config.PipeAccessToken, config.OfferingCheckIntervalSec)
 			log.Log("error", err)
-		}()
+		}(o)
 	}
 
 	mux := goji.NewMux()
