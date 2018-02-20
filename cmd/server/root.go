@@ -57,6 +57,7 @@ func init() {
 	RootCmd.PersistentFlags().Int("offeringCheckIntervalSec", 600, "Offering Check Interval in secs")
 	RootCmd.PersistentFlags().String("offeringEndpoint", "", "Offering End Point")
 	RootCmd.PersistentFlags().String("pipeAccessToken", "", "Pipes access token")
+	RootCmd.PersistentFlags().String("mapsKey", "", "API Key for Geocoding locations via Google Maps API")
 	RootCmd.PersistentFlags().Int("HTTPPort", 0, "HTTP Port where will be running the service")
 	RootCmd.PersistentFlags().String("HTTPHost", "localhost", "HTTP Hostname where will be running the service")
 	RootCmd.PersistentFlags().Bool("debug", false, "enable debug")
@@ -69,11 +70,11 @@ func init() {
 	viper.BindPFlag("offeringCheckIntervalSec", RootCmd.PersistentFlags().Lookup("offeringCheckIntervalSec"))
 	viper.BindPFlag("offeringEndpoint", RootCmd.PersistentFlags().Lookup("offeringEndpoint"))
 	viper.BindPFlag("pipeAccessToken", RootCmd.PersistentFlags().Lookup("pipeAccessToken"))
+	viper.BindPFlag("mapsKey", RootCmd.PersistentFlags().Lookup("mapsKey"))
 	viper.BindPFlag("HTTPPort", RootCmd.PersistentFlags().Lookup("HTTPPort"))
 	viper.BindPFlag("HTTPHost", RootCmd.PersistentFlags().Lookup("HTTPHost"))
 	viper.BindPFlag("debug", RootCmd.PersistentFlags().Lookup("debug"))
 	viper.BindPFlag("noauth", RootCmd.PersistentFlags().Lookup("noauth"))
-
 }
 
 // initConfig reads in config file and ENV variables if set.

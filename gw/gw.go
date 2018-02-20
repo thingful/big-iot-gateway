@@ -20,6 +20,7 @@ import (
 	"github.com/thingful/bigiot"
 	goji "goji.io"
 	"goji.io/pat"
+	"googlemaps.github.io/maps"
 )
 
 var (
@@ -64,11 +65,39 @@ func Start(config Config, offers []Offer) error {
 		return err
 	}
 
+	mapClient, err := maps.NewClient(maps.WithAPIKey(config.MapsKey))
+	if err != nil {
+		return err
+	}
+
 	offerings := []*bigiot.Offering{}
 
 	for _, o := range offers {
+		log.Log("offering-id", o.ID, "msg", "registering")
 
 		offeringDescription := makeOfferingInput(o, offeringEndpoint.String(), config.OfferingActiveLengthSec)
+
+		// attempt to get a geobounds for the given city location
+		geocodeResults, err := mapClient.Geocode(context.Background(), &maps.GeocodingRequest{
+			Address: o.City,
+		})
+		if err != nil {
+			log.Log("error", err)
+		}
+
+		if len(geocodeResults) > 0 {
+			offeringDescription.SpatialExtent.BoundingBox = &bigiot.BoundingBox{
+				Location1: bigiot.Location{
+					Lng: geocodeResults[0].Geometry.Bounds.NorthEast.Lng,
+					Lat: geocodeResults[0].Geometry.Bounds.NorthEast.Lat,
+				},
+				Location2: bigiot.Location{
+					Lng: geocodeResults[0].Geometry.Bounds.SouthWest.Lng,
+					Lat: geocodeResults[0].Geometry.Bounds.SouthWest.Lat,
+				},
+			}
+		}
+
 		offering, err := provider.RegisterOffering(context.Background(), offeringDescription)
 		if err != nil {
 			log.Log("error", err, "offer", o.Name)
