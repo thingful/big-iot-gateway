@@ -1,7 +1,7 @@
 {
   "offers": [
     {
-      "ID": "torino-weather-temperature",
+      "ID": "torino_weather_temperature",
       "Name": "Torino Weather Temperature",
       "City": "Torino",
       "PipeURL": "https://thingful-pipes.herokuapp.com/api/run/8ced53ba-284a-4a5a-87ca-d67fa3629520",
@@ -17,7 +17,7 @@
       ]
     },
     {
-      "ID": "torino-weather-humidity",
+      "ID": "torino_weather_humidity",
       "Name": "Torino Weather Humidity",
       "City": "Torino",
       "PipeURL": "https://thingful-pipes.herokuapp.com/api/run/39429ddb-f42c-485e-bf49-232b7675b61c",
@@ -33,7 +33,7 @@
       ]
     },
     {
-      "ID": "torino-traffic-speed",
+      "ID": "torino_traffic_speed",
       "Name": "Torino Traffic Speed Average",
       "City": "Torino",
       "PipeURL": "https://thingful-pipes.herokuapp.com/api/run/3f26383d-7336-45ed-af0b-4e6997d9c551",
@@ -49,7 +49,7 @@
       ]
     },
     {
-      "ID": "torino-parking-total-capacity",
+      "ID": "torino_parking_total_capacity",
       "Name": "Torino Parking Total Capacity",
       "City": "Torino",
       "PipeURL": "https://thingful-pipes.herokuapp.com/api/run/d3f0a0a5-03b9-43a1-a32a-e29605ee7d4c",
@@ -65,7 +65,7 @@
       ]
     },
     {
-      "ID": "torino-parking-vacant-spaces",
+      "ID": "torino_parking_vacant_spaces",
       "Name": "Torino Parking Number of Vacant Spaces",
       "City": "Torino",
       "PipeURL": "https://thingful-pipes.herokuapp.com/api/run/b3c98aa7-4107-4ba6-8a0a-15a43a17ae97",
@@ -81,7 +81,7 @@
       ]
     },
     {
-      "ID": "barcelona-env-wind-speed",
+      "ID": "barcelona_env_wind_speed",
       "Name": "Barcelona Wind Speed",
       "City": "Barcelona",
       "PipeURL": "https://thingful-pipes.herokuapp.com/api/run/3ba76bd1-2e69-4dc1-92bd-5a108e72a433",
@@ -97,7 +97,7 @@
       ]
     },
     {
-      "ID": "barcelona-env-wind-direction",
+      "ID": "barcelona_env_wind_direction",
       "Name": "Barcelona Wind Direction",
       "City": "Barcelona",
       "PipeURL": "https://thingful-pipes.herokuapp.com/api/run/582de2bb-aa7b-48db-830b-835f1e74d21f",
@@ -113,7 +113,7 @@
       ]
     },
     {
-      "ID": "barcelona-air-quality-co",
+      "ID": "barcelona_air_quality_co",
       "Name": "Barcelona Air Quality CO Concentration",
       "City": "Barcelona",
       "PipeURL": "https://thingful-pipes.herokuapp.com/api/run/2af0ad7a-ce36-476c-999e-c0743ddd56b7",
@@ -129,7 +129,7 @@
       ]
     },
     {
-      "ID": "barcelona-env-humidity",
+      "ID": "barcelona_env_humidity",
       "Name": "Barcelona Relative Humidity",
       "City": "Barcelona",
       "PipeURL": "https://thingful-pipes.herokuapp.com/api/run/39353d33-9dce-4fa4-91dc-3f6fbff7a234",
@@ -145,7 +145,7 @@
       ]
     },
     {
-      "ID": "barcelona-air-quality-no2",
+      "ID": "barcelona_air_quality_no2",
       "Name": "Barcelona Air Quality NO2 Concentration",
       "City": "Barcelona",
       "PipeURL": "https://thingful-pipes.herokuapp.comapi/run/a81790a7-a8f8-46d5-9627-0b4e7358b30e",
@@ -161,7 +161,7 @@
       ]
     },
     {
-      "ID": "barcelona-air-temperature",
+      "ID": "barcelona_air_temperature",
       "Name": "Barcelona Air Temperature",
       "City": "Barcelona",
       "PipeURL": "https://thingful-pipes.herokuapp.com/api/run/e44f4430-8c19-483b-95e0-c255f0550d77",
@@ -177,7 +177,7 @@
       ]
     },
     {
-      "ID": "barcelona-noise-level",
+      "ID": "barcelona_noise_level",
       "Name": "Barcelona Noise Level",
       "City": "Barcelona",
       "PipeURL": "https://thingful-pipes.herokuapp.com/api/run/d85965a5-7437-4adf-9562-54dba76b01aa",
