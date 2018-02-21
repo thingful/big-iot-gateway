@@ -4,7 +4,7 @@
       "ID": "torino_weather_temperature",
       "Name": "Torino Weather Temperature",
       "City": "Torino",
-      "PipeURL": "https://thingful-pipes.herokuapp.com/api/run/8ced53ba-284a-4a5a-87ca-d67fa3629520",
+      "PipeURL": "https://datapipes.thingful.net/api/run/c1466b56-bf99-4fcb-bb23-f7634738b086",
       "Category": "urn:big-iot:WeatherIndicatorCategory",
       "Datalicense": "CCBySAV4URL",
       "Price": 0,
@@ -12,7 +12,7 @@
         {
           "BigiotName": "airTemperatureValue",
           "BigiotRDF": "schema:airTemperatureValue",
-          "PipeTerm": "Air Temperature, Weather Temperature, Ambient Temperature"
+          "PipeTerm": "airTemperature,WeatherTemperature,AmbientTemperature"
         }
       ]
     },
@@ -20,7 +20,7 @@
       "ID": "torino_weather_humidity",
       "Name": "Torino Weather Humidity",
       "City": "Torino",
-      "PipeURL": "https://thingful-pipes.herokuapp.com/api/run/39429ddb-f42c-485e-bf49-232b7675b61c",
+      "PipeURL": "https://datapipes.thingful.net/api/run/5d520cf4-3113-453f-bee6-c3cfa2dccc8a",
       "Category": "urn:big-iot:WeatherIndicatorCategory",
       "Datalicense": "CCBySAV4URL",
       "Price": 0,
@@ -28,7 +28,7 @@
         {
           "BigiotName": "airHumidityValue",
           "BigiotRDF": "schema:airHumidityValue",
-          "PipeTerm": "Humidity"
+          "PipeTerm": "humidity"
         }
       ]
     },
@@ -36,7 +36,7 @@
       "ID": "torino_traffic_speed",
       "Name": "Torino Traffic Speed Average",
       "City": "Torino",
-      "PipeURL": "https://thingful-pipes.herokuapp.com/api/run/3f26383d-7336-45ed-af0b-4e6997d9c551",
+      "PipeURL": "https://datapipes.thingful.net/api/run/5c94ea3c-d73e-4cd6-938a-4297f9090a09",
       "Category": "urn:big-iot:TrafficCategory",
       "Datalicense": "IODLV2URL",
       "Price": 0,
@@ -44,7 +44,7 @@
         {
           "BigiotName": "SpeedAverage",
           "BigiotRDF": "schema:TrafficSpeed",
-          "PipeTerm": "Speed Average"
+          "PipeTerm": "speedAverage"
         }
       ]
     },
@@ -52,7 +52,7 @@
       "ID": "torino_parking_total_capacity",
       "Name": "Torino Parking Total Capacity",
       "City": "Torino",
-      "PipeURL": "https://thingful-pipes.herokuapp.com/api/run/d3f0a0a5-03b9-43a1-a32a-e29605ee7d4c",
+      "PipeURL": "https://datapipes.thingful.net/api/run/6cf90539-7dee-4a9f-bd73-2c6c8bc1ca71",
       "Category": "urn:big-iot:ParkingSpaceCategory",
       "Datalicense": "IODLV2URL",
       "Price": 0,
@@ -60,7 +60,7 @@
         {
           "BigiotName": "totalCapacity",
           "BigiotRDF": "schema:totalCapacity",
-          "PipeTerm": "total capacity"
+          "PipeTerm": "totalCapacity"
         }
       ]
     },
@@ -68,7 +68,7 @@
       "ID": "torino_parking_vacant_spaces",
       "Name": "Torino Parking Number of Vacant Spaces",
       "City": "Torino",
-      "PipeURL": "https://thingful-pipes.herokuapp.com/api/run/b3c98aa7-4107-4ba6-8a0a-15a43a17ae97",
+      "PipeURL": "https://datapipes.thingful.net/api/run/019fa291-199f-4f8b-bfd4-6284856b5b1e",
       "Category": "urn:big-iot:ParkingSpaceCategory",
       "Datalicense": "IODLV2URL",
       "Price": 0,
@@ -76,7 +76,7 @@
         {
           "BigiotName": "numberOfVacantParkingSpaces",
           "BigiotRDF": "schema:parkingNumberOfVacantSpaces",
-          "PipeTerm": "number of vacant parking spaces"
+          "PipeTerm": "numberOfVacantParkingSpaces"
         }
       ]
     },
@@ -84,7 +84,7 @@
       "ID": "barcelona_env_wind_speed",
       "Name": "Barcelona Wind Speed",
       "City": "Barcelona",
-      "PipeURL": "https://thingful-pipes.herokuapp.com/api/run/3ba76bd1-2e69-4dc1-92bd-5a108e72a433",
+      "PipeURL": "https://datapipes.thingful.net/api/run/881d7349-980a-40a0-910e-2dfca1ecca31",
       "Category": "urn:big-iot:WeatherIndicatorCategory",
       "Datalicense": "https://api.thingful.net/providers/smartcitizen",
       "Price": 0,
@@ -100,7 +100,7 @@
       "ID": "barcelona_env_wind_direction",
       "Name": "Barcelona Wind Direction",
       "City": "Barcelona",
-      "PipeURL": "https://thingful-pipes.herokuapp.com/api/run/582de2bb-aa7b-48db-830b-835f1e74d21f",
+      "PipeURL": "https://datapipes.thingful.net/api/run/1e2a6732-b950-4e5b-a49d-efa14c3004a3",
       "Category": "urn:big-iot:WeatherIndicatorCategory",
       "Datalicense": "https://api.thingful.net/providers/smartcitizen",
       "Price": 0,
@@ -116,7 +116,7 @@
       "ID": "barcelona_air_quality_co",
       "Name": "Barcelona Air Quality CO Concentration",
       "City": "Barcelona",
-      "PipeURL": "https://thingful-pipes.herokuapp.com/api/run/2af0ad7a-ce36-476c-999e-c0743ddd56b7",
+      "PipeURL": "https://datapipes.thingful.net/api/run/3e6bb25c-a2ec-4111-bb2d-ae4797b838a0",
       "Category": "urn:big-iot:WeatherIndicatorCategory",
       "Datalicense": "https://api.thingful.net/providers/smartcitizen",
       "Price": 0,
@@ -132,7 +132,7 @@
       "ID": "barcelona_env_humidity",
       "Name": "Barcelona Relative Humidity",
       "City": "Barcelona",
-      "PipeURL": "https://thingful-pipes.herokuapp.com/api/run/39353d33-9dce-4fa4-91dc-3f6fbff7a234",
+      "PipeURL": "https://datapipes.thingful.net/api/run/5d520cf4-3113-453f-bee6-c3cfa2dccc8a",
       "Category": "urn:big-iot:WeatherIndicatorCategory",
       "Datalicense": "https://api.thingful.net/providers/smartcitizen",
       "Price": 0,
@@ -140,7 +140,7 @@
         {
           "BigiotName": "Humidity",
           "BigiotRDF": "schema:airHumidityValue",
-          "PipeTerm": "relativeHumidity"
+          "PipeTerm": "humidity"
         }
       ]
     },
@@ -148,7 +148,7 @@
       "ID": "barcelona_air_quality_no2",
       "Name": "Barcelona Air Quality NO2 Concentration",
       "City": "Barcelona",
-      "PipeURL": "https://thingful-pipes.herokuapp.comapi/run/a81790a7-a8f8-46d5-9627-0b4e7358b30e",
+      "PipeURL": "https://datapipes.thingful.net/api/run/34c99897-76eb-4ce2-847a-48574fa6a49f",
       "Category": "urn:big-iot:NO2Category",
       "Datalicense": "https://api.thingful.net/providers/smartcitizen",
       "Price": 0,
@@ -164,7 +164,7 @@
       "ID": "barcelona_air_temperature",
       "Name": "Barcelona Air Temperature",
       "City": "Barcelona",
-      "PipeURL": "https://thingful-pipes.herokuapp.com/api/run/e44f4430-8c19-483b-95e0-c255f0550d77",
+      "PipeURL": "https://datapipes.thingful.net/api/run/9fb86e7a-1354-4774-80ed-ee8e9ecf164d",
       "Category": "urn:big-iot:WeatherIndicatorCategory",
       "Datalicense": "https://api.thingful.net/providers/smartcitizen",
       "Price": 0,
@@ -180,7 +180,7 @@
       "ID": "barcelona_noise_level",
       "Name": "Barcelona Noise Level",
       "City": "Barcelona",
-      "PipeURL": "https://thingful-pipes.herokuapp.com/api/run/d85965a5-7437-4adf-9562-54dba76b01aa",
+      "PipeURL": "https://datapipes.thingful.net/api/run/0e92eab5-1327-452d-931b-e7d1851c4a90",
       "Category": "urn:big-iot:NoisePollutionIndicatorCategory",
       "Datalicense": "https://api.thingful.net/providers/smartcitizen",
       "Price": 0,
