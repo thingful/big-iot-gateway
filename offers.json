@@ -11,7 +11,7 @@
       "Outputs": [
         {
           "BigiotName": "airTemperature",
-          "BigiotRDF": "bigiot:hasAirTemperature",
+          "BigiotRDF": "http://schema.big-iot.org/environment/hasAirTemperature",
           "PipeTerm": "airTemperature,WeatherTemperature,AmbientTemperature"
         }
       ]
@@ -27,7 +27,7 @@
       "Outputs": [
         {
           "BigiotName": "humidity",
-          "BigiotRDF": "bigiot:hasHumidity",
+          "BigiotRDF": "http://schema.big-iot.org/environment/hasHumidity",
           "PipeTerm": "humidity"
         }
       ]
@@ -43,7 +43,7 @@
       "Outputs": [
         {
           "BigiotName": "windSpeed",
-          "BigiotRDF": "bigiot:hasWindSpeed",
+          "BigiotRDF": "http://schema.big-iot.org/environment/hasWindSpeed",
           "PipeTerm": "speedAverage"
         }
       ]
@@ -91,7 +91,7 @@
       "Outputs": [
         {
           "BigiotName": "windSpeed",
-          "BigiotRDF": "bigiot:hasWindSpeed",
+          "BigiotRDF": "http://schema.big-iot.org/environment/hasWindSpeed",
           "PipeTerm": "windVelocity,WindSpeed"
         }
       ]
@@ -123,7 +123,7 @@
       "Outputs": [
         {
           "BigiotName": "coConcentration",
-          "BigiotRDF": "bigiot:hasCO_concentration",
+          "BigiotRDF": "http://schema.big-iot.org/environment/hasCO_concentration",
           "PipeTerm": "carbonMonoxide(CO)ChemicalAgentAtmosphericConcentration"
         }
       ]
@@ -139,7 +139,7 @@
       "Outputs": [
         {
           "BigiotName": "humidity",
-          "BigiotRDF": "bigiot:hasHumidity",
+          "BigiotRDF": "http://schema.big-iot.org/environment/hasHumidity",
           "PipeTerm": "humidity"
         }
       ]
@@ -155,7 +155,7 @@
       "Outputs": [
         {
           "BigiotName": "no2Concentration",
-          "BigiotRDF": "bigiot:hasNO2_concentration",
+          "BigiotRDF": "http://schema.big-iot.org/environment/hasNO2_concentration",
           "PipeTerm": "nO2ChemicalAgentAtmosphericConcentration"
         }
       ]
@@ -171,7 +171,7 @@
       "Outputs": [
         {
           "BigiotName": "airTemperature",
-          "BigiotRDF": "bigiot:hasAirTemperature",
+          "BigiotRDF": "http://schema.big-iot.org/environment/hasAirTemperature",
           "PipeTerm": "temperature"
         }
       ]
