@@ -41,6 +41,11 @@ var (
 			BigiotRDF:  "http://schema.org/attribution",
 			PipeTerm:   "provider.name",
 		},
+		Output{
+			BigiotName: "timestamp",
+			BigiotRDF:  "http://www.w3.org/ns/sosa/resultTime",
+			PipeTerm:   "updatedAt",
+		},
 	}
 )
 
