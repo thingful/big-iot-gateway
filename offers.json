@@ -10,8 +10,8 @@
       "Price": 0,
       "Outputs": [
         {
-          "BigiotName": "airTemperatureValue",
-          "BigiotRDF": "schema:airTemperatureValue",
+          "BigiotName": "airTemperature",
+          "BigiotRDF": "http://schema.big-iot.org/environment/hasAirTemperature",
           "PipeTerm": "airTemperature,WeatherTemperature,AmbientTemperature"
         }
       ]
@@ -26,8 +26,8 @@
       "Price": 0,
       "Outputs": [
         {
-          "BigiotName": "airHumidityValue",
-          "BigiotRDF": "schema:airHumidityValue",
+          "BigiotName": "humidity",
+          "BigiotRDF": "http://schema.big-iot.org/environment/hasHumidity",
           "PipeTerm": "humidity"
         }
       ]
@@ -42,8 +42,8 @@
       "Price": 0,
       "Outputs": [
         {
-          "BigiotName": "SpeedAverage",
-          "BigiotRDF": "schema:TrafficSpeed",
+          "BigiotName": "windSpeed",
+          "BigiotRDF": "http://schema.big-iot.org/environment/hasWindSpeed",
           "PipeTerm": "speedAverage"
         }
       ]
@@ -59,7 +59,7 @@
       "Outputs": [
         {
           "BigiotName": "totalCapacity",
-          "BigiotRDF": "schema:totalCapacity",
+          "BigiotRDF": "proposed:totalParkingCapacity",
           "PipeTerm": "totalCapacity"
         }
       ]
@@ -75,7 +75,7 @@
       "Outputs": [
         {
           "BigiotName": "numberOfVacantParkingSpaces",
-          "BigiotRDF": "schema:parkingNumberOfVacantSpaces",
+          "BigiotRDF": "proposed:parkingNumberOfVacantSpaces",
           "PipeTerm": "numberOfVacantParkingSpaces"
         }
       ]
@@ -90,8 +90,8 @@
       "Price": 0,
       "Outputs": [
         {
-          "BigiotName": "windSpeedValue",
-          "BigiotRDF": "schema:windSpeedValue",
+          "BigiotName": "windSpeed",
+          "BigiotRDF": "http://schema.big-iot.org/environment/hasWindSpeed",
           "PipeTerm": "windVelocity,WindSpeed"
         }
       ]
@@ -106,8 +106,8 @@
       "Price": 0,
       "Outputs": [
         {
-          "BigiotName": "windDirectionValue",
-          "BigiotRDF": "schema:windDirectionValue",
+          "BigiotName": "windDirection",
+          "BigiotRDF": "proposed:windDirection",
           "PipeTerm": "windDirection"
         }
       ]
@@ -117,13 +117,13 @@
       "Name": "Barcelona Air Quality CO Concentration",
       "City": "Barcelona",
       "PipeURL": "https://datapipes.thingful.net/api/run/3e6bb25c-a2ec-4111-bb2d-ae4797b838a0",
-      "Category": "urn:big-iot:WeatherIndicatorCategory",
+      "Category": "urn:big-iot:COCategory",
       "Datalicense": "https://api.thingful.net/providers/smartcitizen",
       "Price": 0,
       "Outputs": [
         {
-          "BigiotName": "ChemicalAgentAtmosphericConcentrationCO",
-          "BigiotRDF": "schema:hasCO_concentration",
+          "BigiotName": "coConcentration",
+          "BigiotRDF": "http://schema.big-iot.org/environment/hasCO_concentration",
           "PipeTerm": "carbonMonoxide(CO)ChemicalAgentAtmosphericConcentration"
         }
       ]
@@ -138,8 +138,8 @@
       "Price": 0,
       "Outputs": [
         {
-          "BigiotName": "Humidity",
-          "BigiotRDF": "schema:airHumidityValue",
+          "BigiotName": "humidity",
+          "BigiotRDF": "http://schema.big-iot.org/environment/hasHumidity",
           "PipeTerm": "humidity"
         }
       ]
@@ -154,8 +154,8 @@
       "Price": 0,
       "Outputs": [
         {
-          "BigiotName": "air_qualityNO2",
-          "BigiotRDF": "schema:hasN2O_concentration",
+          "BigiotName": "no2Concentration",
+          "BigiotRDF": "http://schema.big-iot.org/environment/hasNO2_concentration",
           "PipeTerm": "nO2ChemicalAgentAtmosphericConcentration"
         }
       ]
@@ -170,8 +170,8 @@
       "Price": 0,
       "Outputs": [
         {
-          "BigiotName": "airTemperatureValue",
-          "BigiotRDF": "schema:airTemperatureValue",
+          "BigiotName": "airTemperature",
+          "BigiotRDF": "http://schema.big-iot.org/environment/hasAirTemperature",
           "PipeTerm": "temperature"
         }
       ]

@@ -28,18 +28,23 @@ var (
 	commonOutputs = []Output{
 		Output{
 			BigiotName: "latitude",
-			BigiotRDF:  "http://schema.org/latitude",
+			BigiotRDF:  "schema:latitude",
 			PipeTerm:   "latitude",
 		},
 		Output{
 			BigiotName: "longitude",
-			BigiotRDF:  "http://schema.org/longitude",
+			BigiotRDF:  "schema:longitude",
 			PipeTerm:   "longitude",
 		},
 		Output{
 			BigiotName: "attribution",
-			BigiotRDF:  "http://schema.org/attribution",
+			BigiotRDF:  "urn:proposed:attribution",
 			PipeTerm:   "provider.name",
+		},
+		Output{
+			BigiotName: "timestamp",
+			BigiotRDF:  "sosa:resultTime",
+			PipeTerm:   "updatedAt",
 		},
 	}
 )
@@ -75,28 +80,7 @@ func Start(config Config, offers []Offer) error {
 	for _, o := range offers {
 		log.Log("offering-id", o.ID, "msg", "registering")
 
-		offeringDescription := makeOfferingInput(o, offeringEndpoint.String(), config.OfferingActiveLengthSec)
-
-		// attempt to get a geobounds for the given city location
-		geocodeResults, err := mapClient.Geocode(context.Background(), &maps.GeocodingRequest{
-			Address: o.City,
-		})
-		if err != nil {
-			log.Log("error", err)
-		}
-
-		if len(geocodeResults) > 0 {
-			offeringDescription.SpatialExtent.BoundingBox = &bigiot.BoundingBox{
-				Location1: bigiot.Location{
-					Lng: geocodeResults[0].Geometry.Bounds.NorthEast.Lng,
-					Lat: geocodeResults[0].Geometry.Bounds.NorthEast.Lat,
-				},
-				Location2: bigiot.Location{
-					Lng: geocodeResults[0].Geometry.Bounds.SouthWest.Lng,
-					Lat: geocodeResults[0].Geometry.Bounds.SouthWest.Lat,
-				},
-			}
-		}
+		offeringDescription := makeOfferingInput(o, offeringEndpoint.String(), config.OfferingActiveLengthSec, mapClient)
 
 		offering, err := provider.RegisterOffering(context.Background(), offeringDescription)
 		if err != nil {
@@ -106,7 +90,7 @@ func Start(config Config, offers []Offer) error {
 		offerings = append(offerings, offering)
 
 		go func(off Offer) {
-			err := offeringCheck(off, provider, offeringEndpoint.String(), config.PipeAccessToken, config.OfferingCheckIntervalSec)
+			err := offeringCheck(off, provider, offeringEndpoint.String(), config.PipeAccessToken, config.OfferingCheckIntervalSec, mapClient)
 			log.Log("error", err)
 		}(o)
 	}
@@ -211,7 +195,7 @@ func authenticateProvider(id, secret, uri string) (*bigiot.Provider, error) {
 	return provider, err
 }
 
-func makeOfferingInput(o Offer, host string, offeringActiveLengthSec time.Duration) *bigiot.OfferingDescription {
+func makeOfferingInput(o Offer, host string, offeringActiveLengthSec time.Duration, mapClient *maps.Client) *bigiot.OfferingDescription {
 	var princingModel bigiot.PricingModel
 
 	if o.Price > 0 {
@@ -269,6 +253,27 @@ func makeOfferingInput(o Offer, host string, offeringActiveLengthSec time.Durati
 		addOfferingInput.Outputs = append(addOfferingInput.Outputs, d)
 	}
 
+	// attempt to get a geobounds for the given city location
+	geocodeResults, err := mapClient.Geocode(context.Background(), &maps.GeocodingRequest{
+		Address: o.City,
+	})
+	if err != nil {
+		log.Log("error", err)
+	}
+
+	if len(geocodeResults) > 0 {
+		addOfferingInput.SpatialExtent.BoundingBox = &bigiot.BoundingBox{
+			Location1: bigiot.Location{
+				Lng: geocodeResults[0].Geometry.Bounds.NorthEast.Lng,
+				Lat: geocodeResults[0].Geometry.Bounds.NorthEast.Lat,
+			},
+			Location2: bigiot.Location{
+				Lng: geocodeResults[0].Geometry.Bounds.SouthWest.Lng,
+				Lat: geocodeResults[0].Geometry.Bounds.SouthWest.Lat,
+			},
+		}
+	}
+
 	return addOfferingInput
 }
 
@@ -278,7 +283,8 @@ func offeringCheck(
 	provider *bigiot.Provider,
 	host string,
 	pipeAccessToken string,
-	offeringCheckIntervalSec time.Duration) error {
+	offeringCheckIntervalSec time.Duration,
+	mapClient *maps.Client) error {
 
 	ticker := time.NewTicker(time.Second * offeringCheckIntervalSec)
 	for range ticker.C {
@@ -299,7 +305,7 @@ func offeringCheck(
 		if len(j) == 1 {
 			//Debug
 			log.Log("msg", "pipe for offering: ", offering.Name, " return 1 result, re-registering offering:")
-			offeringDescription := makeOfferingInput(offering, host, offeringCheckIntervalSec)
+			offeringDescription := makeOfferingInput(offering, host, offeringCheckIntervalSec, mapClient)
 			_, err = provider.RegisterOffering(context.Background(), offeringDescription)
 			if err != nil {
 				return err
