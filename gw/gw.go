@@ -28,22 +28,22 @@ var (
 	commonOutputs = []Output{
 		Output{
 			BigiotName: "latitude",
-			BigiotRDF:  "http://schema.org/latitude",
+			BigiotRDF:  "schema:latitude",
 			PipeTerm:   "latitude",
 		},
 		Output{
 			BigiotName: "longitude",
-			BigiotRDF:  "http://schema.org/longitude",
+			BigiotRDF:  "schema:longitude",
 			PipeTerm:   "longitude",
 		},
 		Output{
 			BigiotName: "attribution",
-			BigiotRDF:  "proposed:attribution",
+			BigiotRDF:  "urn:proposed:attribution",
 			PipeTerm:   "provider.name",
 		},
 		Output{
 			BigiotName: "timestamp",
-			BigiotRDF:  "http://www.w3.org/ns/sosa/resultTime",
+			BigiotRDF:  "sosa:resultTime",
 			PipeTerm:   "updatedAt",
 		},
 	}

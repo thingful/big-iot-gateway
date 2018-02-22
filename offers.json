@@ -10,8 +10,8 @@
       "Price": 0,
       "Outputs": [
         {
-          "BigiotName": "airTemperatureValue",
-          "BigiotRDF": "proposed:airTemperature",
+          "BigiotName": "airTemperature",
+          "BigiotRDF": "bigiot:hasAirTemperature",
           "PipeTerm": "airTemperature,WeatherTemperature,AmbientTemperature"
         }
       ]
@@ -26,8 +26,8 @@
       "Price": 0,
       "Outputs": [
         {
-          "BigiotName": "airHumidityValue",
-          "BigiotRDF": "proposed:airHumidity",
+          "BigiotName": "humidity",
+          "BigiotRDF": "bigiot:hasHumidity",
           "PipeTerm": "humidity"
         }
       ]
@@ -42,8 +42,8 @@
       "Price": 0,
       "Outputs": [
         {
-          "BigiotName": "SpeedAverage",
-          "BigiotRDF": "proposed:TrafficSpeed",
+          "BigiotName": "windSpeed",
+          "BigiotRDF": "bigiot:hasWindSpeed",
           "PipeTerm": "speedAverage"
         }
       ]
@@ -90,8 +90,8 @@
       "Price": 0,
       "Outputs": [
         {
-          "BigiotName": "windSpeedValue",
-          "BigiotRDF": "proposed:windSpeed",
+          "BigiotName": "windSpeed",
+          "BigiotRDF": "bigiot:hasWindSpeed",
           "PipeTerm": "windVelocity,WindSpeed"
         }
       ]
@@ -106,7 +106,7 @@
       "Price": 0,
       "Outputs": [
         {
-          "BigiotName": "windDirectionValue",
+          "BigiotName": "windDirection",
           "BigiotRDF": "proposed:windDirection",
           "PipeTerm": "windDirection"
         }
@@ -122,8 +122,8 @@
       "Price": 0,
       "Outputs": [
         {
-          "BigiotName": "ChemicalAgentAtmosphericConcentrationCO",
-          "BigiotRDF": "proposed:COAtmosphericConcentration",
+          "BigiotName": "coConcentration",
+          "BigiotRDF": "bigiot:hasCO_concentration",
           "PipeTerm": "carbonMonoxide(CO)ChemicalAgentAtmosphericConcentration"
         }
       ]
@@ -138,8 +138,8 @@
       "Price": 0,
       "Outputs": [
         {
-          "BigiotName": "Humidity",
-          "BigiotRDF": "proposed:airHumidity",
+          "BigiotName": "humidity",
+          "BigiotRDF": "bigiot:hasHumidity",
           "PipeTerm": "humidity"
         }
       ]
@@ -154,8 +154,8 @@
       "Price": 0,
       "Outputs": [
         {
-          "BigiotName": "air_qualityNO2",
-          "BigiotRDF": "proposed:NOAtmosphericConcentration",
+          "BigiotName": "no2Concentration",
+          "BigiotRDF": "bigiot:hasNO2_concentration",
           "PipeTerm": "nO2ChemicalAgentAtmosphericConcentration"
         }
       ]
@@ -170,8 +170,8 @@
       "Price": 0,
       "Outputs": [
         {
-          "BigiotName": "airTemperatureValue",
-          "BigiotRDF": "proposed:airTemperature",
+          "BigiotName": "airTemperature",
+          "BigiotRDF": "bigiot:hasAirTemperature",
           "PipeTerm": "temperature"
         }
       ]
@@ -187,7 +187,7 @@
       "Outputs": [
         {
           "BigiotName": "NoiseLevel",
-          "BigiotRDF": "proposed:NoiseLevel",
+          "BigiotRDF": "schema:NoiseLevel",
           "PipeTerm": "sound,NoiseLevel"
         }
       ]
