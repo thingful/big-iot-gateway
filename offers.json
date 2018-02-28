@@ -53,7 +53,7 @@
       "Name": "Torino Parking Total Capacity",
       "City": "Torino",
       "PipeURL": "https://datapipes.thingful.net/api/run/6cf90539-7dee-4a9f-bd73-2c6c8bc1ca71",
-      "Category": "urn:big-iot:ParkingSpaceCategory",
+      "Category": "urn:big-iot:ParkingSiteCategory",
       "Datalicense": "IODLV2URL",
       "Price": 0,
       "Outputs": [
@@ -69,13 +69,13 @@
       "Name": "Torino Parking Number of Vacant Spaces",
       "City": "Torino",
       "PipeURL": "https://datapipes.thingful.net/api/run/019fa291-199f-4f8b-bfd4-6284856b5b1e",
-      "Category": "urn:big-iot:ParkingSpaceCategory",
+      "Category": "urn:big-iot:ParkingSiteCategory",
       "Datalicense": "IODLV2URL",
       "Price": 0,
       "Outputs": [
         {
           "BigiotName": "numberOfVacantParkingSpaces",
-          "BigiotRDF": "schema:parkingNumberOfVacantSpaces",
+          "BigiotRDF": "schema:numberOfVacantParkingSpaces",
           "PipeTerm": "numberOfVacantParkingSpaces"
         }
       ]
