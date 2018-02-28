@@ -75,7 +75,7 @@
       "Outputs": [
         {
           "BigiotName": "numberOfVacantParkingSpaces",
-          "BigiotRDF": "proposed:numberOfVacantParkingSpaces",
+          "BigiotRDF": "http://schema.big-iot.org/mobility/numberOfVacantParkingSpaces",
           "PipeTerm": "numberOfVacantParkingSpaces"
         }
       ]
