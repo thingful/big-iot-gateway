@@ -95,21 +95,24 @@ func Start(config Config, offers []Offer) error {
 		}(o)
 	}
 
-	mux := goji.NewMux()
+	rootMux := goji.NewMux()
+	bigiotMux := goji.SubMux()
 
-	mux.HandleFunc(pat.Get("/pulse"), pulse)
+	rootMux.HandleFunc(pat.Get("/pulse"), pulse)
+	rootMux.Handle(pat.New("/offering/*"), bigiotMux)
+
 	if !config.NoAuth {
 		log.Log("msg", "adding auth middleware")
 		auth, err := middleware.NewAuth(provider)
 		if err != nil {
 			return err
 		}
-		mux.Use(auth.Handler)
+		bigiotMux.Use(auth.Handler)
 	} else {
 		log.Log("msg", "no auth")
 	}
 
-	mux.HandleFunc(pat.Get("/offering/:offeringID"), func(w http.ResponseWriter, r *http.Request) {
+	bigiotMux.HandleFunc(pat.Get("/:offeringID"), func(w http.ResponseWriter, r *http.Request) {
 		offeringID := pat.Param(r, "offeringID")
 		log.Log("offeringID", offeringID, "msg", "incoming request")
 		index := getOfferingIndex(offeringID, offers)
@@ -141,7 +144,7 @@ func Start(config Config, offers []Offer) error {
 		}
 	})
 
-	srv := &http.Server{Addr: fmt.Sprintf(":%d", config.HTTPPort), Handler: mux}
+	srv := &http.Server{Addr: fmt.Sprintf(":%d", config.HTTPPort), Handler: rootMux}
 
 	go func() {
 		log.Log("port", config.HTTPPort, "msg", "starting server")
